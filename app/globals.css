@@ -1,0 +1,18 @@
+:root {
+  --font-default: var(--font-pretendard), sans-serif;
+  --font-heading: var(--font-suite), sans-serif;
+  --font-latin: var(--font-montserrat), sans-serif;
+  --primary-color: #ff7710;
+}
+
+body {
+  font-family: var(--font-default);
+}
+
+h1, h2, h3, h4, h5, h6, .heading {
+  font-family: var(--font-heading);
+}
+
+:lang(en) {
+  font-family: var(--font-latin);
+}
