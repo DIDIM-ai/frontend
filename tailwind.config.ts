@@ -9,14 +9,6 @@ const config: Config = {
   ],
   theme: {
     extend: {
-      colors: {
-          primary: {
-            DEFAULT: "#ff7710"
-          },
-          secondary: {
-            DEFAULT: "#ffe4cf"
-          }
-      },
       fontFamily: {
         pretendard: ['var(--font-pretendard)', ...defaultTheme.fontFamily.sans],
         suite: ['var(--font-suite)', ...defaultTheme.fontFamily.sans],
