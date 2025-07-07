@@ -1,6 +1,26 @@
-import * as React from 'react';
 import type { Metadata } from 'next';
+import localFont from 'next/font/local';
+import { Montserrat } from 'next/font/google';
 import './globals.css';
+import { RootHeader } from '@/components/common/RootHeader';
+
+const pretendard = localFont({
+  src: '../public/fonts/PretendardVariable.woff2',
+  variable: '--font-pretendard',
+  display: 'swap',
+});
+
+const suite = localFont({
+  src: '../public/fonts/SUITE-Regular.woff2',
+  variable: '--font-suite',
+  display: 'swap',
+});
+
+const montserrat = Montserrat({
+  subsets: ['latin'],
+  variable: '--font-montserrat',
+  display: 'swap',
+});
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -13,8 +33,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ko">
-      <body>{children}</body>
+    <html lang="ko" className={`${pretendard.variable} ${suite.variable} ${montserrat.variable}`}>
+      <body className="max-w-[var(--space-mobileMax)] min-h-screen px-5 py-4 mx-auto border-x-1 border-zinc-200">
+        <RootHeader />
+        {children}
+      </body>
     </html>
   );
 }
