@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import localFont from 'next/font/local';
 import { Montserrat } from 'next/font/google';
 import './globals.css';
+import { RootHeader } from '@/components/common/RootHeader';
 
 const pretendard = localFont({
   src: '../public/fonts/PretendardVariable.woff2',
@@ -33,7 +34,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko" className={`${pretendard.variable} ${suite.variable} ${montserrat.variable}`}>
-      <body className="max-w-[var(--space-mobileMax)] px-5 py-4 mx-auto">{children}</body>
+      <body className="max-w-[var(--space-mobileMax)] min-h-screen px-5 py-4 mx-auto border-x-1 border-zinc-200">
+        <RootHeader />
+        {children}
+      </body>
     </html>
   );
 }
