@@ -1,7 +1,9 @@
 export default function Home() {
   return (
     <>
-      <p>hi</p>
+      <h1>SUITE</h1>
+      <p>Pretendard</p>
+      <p lang="en">Montserrat</p>
     </>
   );
 }
