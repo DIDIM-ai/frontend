@@ -1,0 +1,9 @@
+{
+  "tailwindCSS.experimental.configFile": "./tailwind.config.ts",
+  "tailwindCSS.emmetCompletions": true, 
+  "editor.inlineSuggest.enabled": true, 
+  "editor.quickSuggestions": { 
+    "strings": "on",
+  },
+  "css.validate": false,
+}

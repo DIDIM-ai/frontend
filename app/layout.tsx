@@ -33,7 +33,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko" className={`${pretendard.variable} ${suite.variable} ${montserrat.variable}`}>
-      <body>{children}</body>
+      <body className="max-w-[var(--space-mobileMax)] px-5 py-4 mx-auto">{children}</body>
     </html>
   );
 }
