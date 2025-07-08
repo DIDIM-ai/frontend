@@ -15,11 +15,11 @@ export function UploadMath() {
         </p>
       </div>
       <div className="flex justify-center gap-2.5">
-        <Button variant="outline" className="w-[130px] cursor-pointer">
+        <Button variant="secondary" className="w-[130px] cursor-pointer">
           <Images />
           <p>갤러리</p>
         </Button>
-        <Button variant="secondary" className="w-[130px] !border-primary">
+        <Button variant="default" className="w-[130px] cursor-pointer">
           <Camera />
           <p>촬영하기</p>
         </Button>
