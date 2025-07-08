@@ -1,9 +1,11 @@
-export default function Home() {
+import { AnalysisResult } from './components/AnalysisResult';
+import { UploadMath } from './components/UploadMath';
+
+export default function UploadPage() {
   return (
-    <div className="">
-      <h1 className="text-primary">SUITE</h1>
-      <p className="text-sm">Pretendard</p>
-      <p lang="en">Montserrat</p>
+    <div className="flex flex-col gap-10">
+      <UploadMath />
+      <AnalysisResult />
     </div>
   );
 }
