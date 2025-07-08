@@ -1,9 +1,9 @@
 import { Button } from '@/components/ui/button';
-import { Camera, Image } from 'lucide-react';
+import { Camera, Images } from 'lucide-react';
 
 export function UploadMath() {
   return (
-    <div>
+    <section>
       <h3 className="text-xl font-bold mb-2.5">문제 업로드</h3>
       <div className="flex flex-col w-full h-[200px] border-dotted border-2 border-primary rounded-[10px] flex items-center justify-center gap-5 mb-5">
         <div className="w-[70px] h-[70px] rounded-full bg-secondary flex items-center justify-center">
@@ -16,7 +16,7 @@ export function UploadMath() {
       </div>
       <div className="flex justify-center gap-2.5">
         <Button variant="outline" className="w-[130px] cursor-pointer">
-          <Image />
+          <Images />
           <p>갤러리</p>
         </Button>
         <Button variant="secondary" className="w-[130px] !border-primary">
@@ -24,6 +24,6 @@ export function UploadMath() {
           <p>촬영하기</p>
         </Button>
       </div>
-    </div>
+    </section>
   );
 }
