@@ -16,7 +16,7 @@ export function BodyWrapper({ children }: Props) {
   const isResultPage = pathname.startsWith('/result');
 
   return (
-    <body className="max-w-[var(--space-mobileMax)] min-h-screen px-5 py-4 mx-auto border-x-1 border-zinc-200">
+    <body className="relative max-w-[var(--space-mobileMax)] min-h-screen px-5 py-4 mx-auto border-x-1 border-zinc-200">
       {!isExcluded && <RootHeader />}
       {isResultPage && <ResultHeader />}
       {children}
