@@ -15,7 +15,7 @@ export function ResultHeader() {
         <ChevronLeft />
       </button>
 
-      <h3 className="text-xl font-bold">분석 결과</h3>
+      <h2 className="text-2xl font-bold">분석 결과</h2>
     </header>
   );
 }
