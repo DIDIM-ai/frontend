@@ -13,7 +13,13 @@ export function UploadMath() {
   const startCamera = async () => {
     setShowCamera(true);
     try {
-      const media = await navigator.mediaDevices.getUserMedia({ video: true });
+      const media = await navigator.mediaDevices.getUserMedia({
+        video: {
+          facingMode: 'environment',
+          width: { ideal: 1024 },
+          height: { ideal: 1080 },
+        },
+      });
       setStream(media);
     } catch (err) {
       console.error('카메라 접근 실패:', err);
@@ -27,7 +33,7 @@ export function UploadMath() {
   };
 
   const handleBase64Upload = (base64: string) => {
-    console.log('base64:', base64);
+    console.log('base64: ', base64);
     // 서버에 업로드 요청
   };
 
