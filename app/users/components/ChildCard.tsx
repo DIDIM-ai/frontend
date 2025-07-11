@@ -1,6 +1,7 @@
 'use client';
 
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -14,19 +15,31 @@ import { useState } from 'react';
 import { ConfirmDeleteModal } from './ConfirmDeleteModal';
 
 type ChildCardProps = {
+  id: string;
   name: string;
   grade: string;
   selected?: boolean;
   onClick: () => void;
 };
 
-export function ChildCard({ name, grade, selected = false, onClick }: ChildCardProps) {
+export function ChildCard({
+  id,
+  name,
+  grade,
+  selected = false,
+  onClick
+}: ChildCardProps) {
   const [showModal, setShowModal] = useState(false);
+  const router = useRouter();
 
   const handleDelete = () => {
-    //실제 삭제 로직 연결 필요
+    // 실제 삭제 로직 연결 필요
     alert(`${name} 삭제됨`);
     setShowModal(false);
+  };
+
+  const handleEdit = () => {
+    router.push(`/users/edit/${id}`);
   };
 
   return (
@@ -57,38 +70,38 @@ export function ChildCard({ name, grade, selected = false, onClick }: ChildCardP
         {/* 케밥 메뉴 */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-        <button
-          onClick={(e) => e.stopPropagation()}
-          className="absolute top-1 right-0 rounded-md z-50"
-        >
-          <MoreVertical
-            className={`w-4 h-4 ${selected ? 'text-white' : 'text-primary'}`}
-          />
-        </button>
+            <button
+              onClick={(e) => e.stopPropagation()}
+              className="absolute top-1 right-0 rounded-md z-50"
+            >
+              <MoreVertical
+                className={`w-4 h-4 ${selected ? 'text-white' : 'text-primary'}`}
+              />
+            </button>
           </DropdownMenuTrigger>
 
-        <DropdownMenuPortal>
-        <DropdownMenuContent
-          align="end"
-          side="top"
-          sideOffset={8}
-          className="absolute top-6 right-1 z-50 w-[80px] rounded-md 
-          border border-primary bg-secondary shadow-md text-sm text-center p-0 font-semibold"
-        >
-          <DropdownMenuItem
-            className="justify-center font-semibold"
-            onSelect={() => alert('수정 클릭됨')}
-          >
-            수정
-          </DropdownMenuItem>
-          <DropdownMenuSeparator className="h-[1px] bg-primary " />
-          <DropdownMenuItem
-            className="justify-center font-semibold"
-            onSelect={() => setShowModal(true)}
-          >
-            삭제
-          </DropdownMenuItem>
-        </DropdownMenuContent>
+          <DropdownMenuPortal>
+            <DropdownMenuContent
+              align="end"
+              side="top"
+              sideOffset={8}
+              className="absolute top-6 right-1 z-50 w-[80px] rounded-md 
+              border border-primary bg-secondary shadow-md text-sm text-center p-0 font-semibold"
+            >
+              <DropdownMenuItem
+                className="justify-center font-semibold"
+                onSelect={handleEdit}
+              >
+                수정
+              </DropdownMenuItem>
+              <DropdownMenuSeparator className="h-[1px] bg-primary" />
+              <DropdownMenuItem
+                className="justify-center font-semibold"
+                onSelect={() => setShowModal(true)}
+              >
+                삭제
+              </DropdownMenuItem>
+            </DropdownMenuContent>
           </DropdownMenuPortal>
         </DropdownMenu>
       </section>

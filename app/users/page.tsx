@@ -31,6 +31,7 @@ export default function UsersPage() {
           {children.map((child, index) => (
             <ChildCard
               key={index}
+              id={`${index}`}
               name={child.name}
               grade={child.grade}
               selected={selectedIndex === index}

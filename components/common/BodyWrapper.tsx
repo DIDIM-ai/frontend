@@ -2,6 +2,7 @@
 
 import { usePathname } from 'next/navigation';
 import { RootHeader } from '@/components/common/RootHeader';
+import { RemoveBodyPointerEvents } from '@/components/common/RemoveBodyPointerEvents';
 
 interface Props {
   children: React.ReactNode;
@@ -9,14 +10,14 @@ interface Props {
 
 export function BodyWrapper({ children }: Props) {
   const pathname = usePathname();
-
   const excludePaths = ['/login'];
   const isExcluded = excludePaths.includes(pathname);
 
   return (
-    <body className="max-w-[var(--space-mobileMax)] min-h-screen px-5 py-4 mx-auto border-x-1 border-zinc-200">
+    <div className="max-w-[var(--space-mobileMax)] min-h-screen px-5 py-4 mx-auto border-x border-zinc-200">
+      <RemoveBodyPointerEvents />
       {!isExcluded && <RootHeader />}
       {children}
-    </body>
+    </div>
   );
 }
