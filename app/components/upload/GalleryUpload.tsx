@@ -1,43 +1,38 @@
-'use client';
-
-import { useRef } from 'react';
+import React, { useRef } from 'react';
 import { Button } from '@/components/ui/button';
-import { Images } from 'lucide-react';
+import { Image } from 'lucide-react';
 
-interface Props {
-  onUpload: (base64: string) => void;
+interface GalleryUploadProps {
+  onUpload: (file: File) => void;
 }
 
-export function GalleryUpload({ onUpload }: Props) {
-  const inputRef = useRef<HTMLInputElement>(null);
+export function GalleryUpload({ onUpload }: GalleryUploadProps) {
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleGalleryClick = () => inputRef.current?.click();
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files[0]) {
+      const selectedFile = event.target.files[0];
+      onUpload(selectedFile);
+    }
+  };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      const base64 = reader.result as string;
-      onUpload(base64);
-    };
-    reader.readAsDataURL(file);
+  const handleClick = () => {
+    fileInputRef.current?.click();
   };
 
   return (
     <>
-      <Button variant="secondary" className="w-[130px]" onClick={handleGalleryClick}>
-        <Images />
-        <p>갤러리</p>
-      </Button>
       <input
         type="file"
         accept="image/*"
-        ref={inputRef}
+        ref={fileInputRef}
         onChange={handleFileChange}
         className="hidden"
       />
+      <Button variant="outline" className="w-[130px]" onClick={handleClick}>
+        <Image />
+        <p>갤러리</p>
+      </Button>
     </>
   );
 }
