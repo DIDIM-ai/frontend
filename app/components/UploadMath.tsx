@@ -14,6 +14,7 @@ export function UploadMath() {
 
   const startCamera = async () => {
     setShowCamera(true);
+
     try {
       const media = await navigator.mediaDevices.getUserMedia({
         video: {
@@ -75,6 +76,8 @@ export function UploadMath() {
     }
   };
 
+  console.log(showCamera);
+
   return (
     <section>
       <h3 className="text-xl font-bold mb-2.5">문제 업로드</h3>
@@ -107,7 +110,6 @@ export function UploadMath() {
       ) : (
         <CameraCapture onCapture={handleFileUpload} stream={stream} stopStream={stopCamera} />
       )}
-
       {isUploading && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-lg flex flex-col items-center">

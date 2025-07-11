@@ -18,9 +18,12 @@ export function CameraCapture({ stream, onCapture, stopStream }: CameraCapturePr
       videoRef.current.srcObject = stream;
     }
     return () => {
-      stopStream();
+      // 컴포넌트가 언마운트될 때만 스트림을 중지
+      if (stream) {
+        stream.getTracks().forEach((track) => track.stop());
+      }
     };
-  }, [stopStream, stream]);
+  }, [stream]);
 
   const takePhoto = () => {
     if (videoRef.current && photoRef.current) {
@@ -54,6 +57,8 @@ export function CameraCapture({ stream, onCapture, stopStream }: CameraCapturePr
       <video
         ref={videoRef}
         autoPlay
+        playsInline
+        muted
         className="w-full h-[300px] bg-black rounded-lg object-contain"
       ></video>
       <canvas ref={photoRef} className="hidden"></canvas>
