@@ -2,13 +2,15 @@
 
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Camera } from 'lucide-react';
+import { Camera, Loader2 } from 'lucide-react';
 import { GalleryUpload } from '@/app/components/upload/GalleryUpload';
 import { CameraCapture } from '@/app/components/upload/CameraCapture';
+import { toast } from 'sonner';
 
 export function UploadMath() {
   const [showCamera, setShowCamera] = useState(false);
   const [stream, setStream] = useState<MediaStream | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
 
   const startCamera = async () => {
     setShowCamera(true);
@@ -23,6 +25,8 @@ export function UploadMath() {
       setStream(media);
     } catch (err) {
       console.error('카메라 접근 실패:', err);
+      toast.error('카메라 접근에 실패했습니다.');
+      setShowCamera(false);
     }
   };
 
@@ -32,9 +36,43 @@ export function UploadMath() {
     setShowCamera(false);
   };
 
-  const handleBase64Upload = (base64: string) => {
-    console.log('base64: ', base64);
-    // 서버에 업로드 요청
+  const handleFileUpload = async (file: File | Blob) => {
+    console.log('업로드할 파일/Blob 객체:', file);
+    setIsUploading(true);
+
+    const formData = new FormData();
+    formData.append('mathProblemImage', file, (file as File).name || 'captured_image.jpeg');
+
+    formData.append('userId', 'user_id_example');
+    formData.append('problemType', 'math');
+
+    try {
+      const response = await fetch('/api/math/solve', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ message: '알 수 없는 오류' }));
+        throw new Error(
+          `HTTP error! status: ${response.status}, message: ${errorData.message || '업로드 실패'}`,
+        );
+      }
+
+      const result = await response.json();
+      console.log('업로드 성공:', result);
+      toast.success('문제가 성공적으로 업로드되었습니다!');
+    } catch (error) {
+      console.error('업로드 실패:', error);
+      toast.error(
+        `업로드 중 오류가 발생했습니다: ${
+          error instanceof Error ? error.message : '알 수 없는 오류'
+        }`,
+      );
+    } finally {
+      setIsUploading(false);
+      stopCamera();
+    }
   };
 
   return (
@@ -54,15 +92,29 @@ export function UploadMath() {
           </div>
 
           <div className="flex justify-center gap-2.5">
-            <GalleryUpload onUpload={handleBase64Upload} />
-            <Button variant="default" className="w-[130px]" onClick={startCamera}>
+            <GalleryUpload onUpload={handleFileUpload} />
+            <Button
+              variant="default"
+              className="w-[130px]"
+              onClick={startCamera}
+              disabled={isUploading}
+            >
               <Camera />
               <p>촬영하기</p>
             </Button>
           </div>
         </>
       ) : (
-        <CameraCapture onCapture={handleBase64Upload} stream={stream} stopStream={stopCamera} />
+        <CameraCapture onCapture={handleFileUpload} stream={stream} stopStream={stopCamera} />
+      )}
+
+      {isUploading && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg flex flex-col items-center">
+            <Loader2 className="h-8 w-8 animate-spin text-primary mb-3" />
+            <p>문제 업로드 중...</p>
+          </div>
+        </div>
       )}
     </section>
   );
