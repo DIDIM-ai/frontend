@@ -34,7 +34,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko" className={`${pretendard.variable} ${suite.variable} ${montserrat.variable}`}>
-      <BodyWrapper>{children}</BodyWrapper>
+      <body>       
+        <BodyWrapper>{children}</BodyWrapper>
+      </body>
     </html>
   );
 }
