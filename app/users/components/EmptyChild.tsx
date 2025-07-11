@@ -3,7 +3,7 @@
 import Image from 'next/image';
 
 interface EmptyChildCardProps {
-  onRegisterClick?: () => void;
+  onRegisterClick: () => void;
 }
 
 export function EmptyChildCard({ onRegisterClick }: EmptyChildCardProps) {
@@ -14,8 +14,8 @@ export function EmptyChildCard({ onRegisterClick }: EmptyChildCardProps) {
       <button
         onClick={onRegisterClick}
         className="w-[284px] h-[60px] flex items-center justify-center gap-4 
-                   border-2 border-dotted border-secondary bg-white
-                   rounded-[5px] text-gray-400 cursor-pointer"
+                   border-3 border-dotted border-secondary bg-white 
+                   rounded-[5px] text-gray-500 cursor-pointer"
       >
         <Image
           src="/assets/plus.svg"
