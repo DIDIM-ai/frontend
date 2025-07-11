@@ -25,6 +25,9 @@ const montserrat = Montserrat({
 export const metadata: Metadata = {
   title: 'AI teacher',
   description: '학부모를 위한 AI 기반 수학 문제 분석 서비스',
+  icons: {
+    icon: '/favicon.svg', 
+  }
 };
 
 export default function RootLayout({
