@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 import { Button } from '@/components/ui/button';
-import { Image } from 'lucide-react';
+import { FileImage } from 'lucide-react';
 
 interface GalleryUploadProps {
   onUpload: (file: File) => void;
@@ -30,7 +30,7 @@ export function GalleryUpload({ onUpload }: GalleryUploadProps) {
         className="hidden"
       />
       <Button variant="outline" className="w-[130px]" onClick={handleClick}>
-        <Image />
+        <FileImage />
         <p>갤러리</p>
       </Button>
     </>
