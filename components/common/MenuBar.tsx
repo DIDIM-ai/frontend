@@ -34,8 +34,8 @@ export function MenuBar() {
   };
 
   return (
-    <footer className="fixed bottom-0 left-1/2 transform -translate-x-1/2 w-full max-w-[calc(var(--space-mobileMax)-2px)] bg-white border-t border-zinc-200 z-50">
-      <div className="flex items-center justify-around px-4">
+    <footer className="fixed bottom-0 left-1/2 transform -translate-x-1/2 w-full max-w-[calc(var(--space-mobileMax)-2px)] backdrop-blur-md border-t border-zinc-200/50 shadow-[0_-4px_20px_rgba(0,0,0,0.08)] z-50">
+      <div className="flex items-center justify-around py-3">
         {menuItems.map((item) => {
           const Icon = item.icon;
           const active = isActive(item.path);
@@ -44,12 +44,12 @@ export function MenuBar() {
             <button
               key={item.id}
               onClick={() => handleMenuClick(item.path)}
-              className={`flex flex-col items-center justify-center py-2 px-3 rounded-lg transition-colors cursor-pointer ${
-                active ? 'text-primary' : 'text-zinc-600 hover:text-zinc-900 hover:bg-zinc-50'
+              className={`flex flex-col items-center justify-center rounded-xl transition-all duration-200 cursor-pointer ${
+                active ? 'text-primary' : 'text-zinc-600 hover:text-zinc-900'
               }`}
             >
-              <Icon size={20} />
-              <span className="text-xs mt-1 font-medium">{item.label}</span>
+              <Icon size={20} className="mb-1" />
+              <span className="text-xs font-medium">{item.label}</span>
             </button>
           );
         })}
