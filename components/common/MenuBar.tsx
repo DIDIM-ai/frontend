@@ -34,7 +34,7 @@ export function MenuBar() {
   };
 
   return (
-    <footer className="fixed bottom-0 left-1/2 transform -translate-x-1/2 w-full max-w-[calc(var(--space-mobileMax)-2px)] backdrop-blur-md border-t border-zinc-200/50 shadow-[0_-4px_20px_rgba(0,0,0,0.08)] z-50">
+    <footer className="fixed bottom-0 left-1/2 transform -translate-x-1/2 w-full max-w-[calc(var(--space-mobileMax)-2px)] backdrop-blur-md border-t border-zinc-200/50 bg-white shadow-[0_-4px_20px_rgba(0,0,0,0.08)] z-50">
       <div className="flex items-center justify-around py-3">
         {menuItems.map((item) => {
           const Icon = item.icon;

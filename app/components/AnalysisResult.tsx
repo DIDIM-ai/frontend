@@ -19,6 +19,30 @@ const results = [
     text: '반지름이 7cm인 원의 둘레를 구하세요. (단, π = 3.14)',
     date: '2025.06.29',
   },
+  {
+    id: 4,
+    imageSrc: '/assets/example.png',
+    text: '반지름이 7cm인 원의 둘레를 구하세요. (단, π = 3.14)',
+    date: '2025.06.29',
+  },
+  {
+    id: 5,
+    imageSrc: '/assets/example.png',
+    text: '반지름이 7cm인 원의 둘레를 구하세요. (단, π = 3.14)',
+    date: '2025.06.29',
+  },
+  {
+    id: 6,
+    imageSrc: '/assets/example.png',
+    text: '반지름이 7cm인 원의 둘레를 구하세요. (단, π = 3.14)',
+    date: '2025.06.29',
+  },
+  {
+    id: 7,
+    imageSrc: '/assets/example.png',
+    text: '반지름이 7cm인 원의 둘레를 구하세요. (단, π = 3.14)',
+    date: '2025.06.29',
+  },
 ];
 
 export function AnalysisResult() {
