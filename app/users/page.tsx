@@ -11,7 +11,7 @@ import { WithdrawButton } from './components/WithdrawButton';
 
 export default function UsersPage() {
   const router = useRouter();
-  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+  const [selectedIndex, setSelectedIndex] = useState<number>(0);
 
   const children = [
     {
@@ -28,6 +28,11 @@ export default function UsersPage() {
       grade: '초등학교 3학년',
       analyses: [],
     },
+    {
+      name: '자녀 3',
+      grade: '초등학교 6학년',
+      analyses: [],
+    },
   ];
 
   //const children: { name: string; grade: string; analyses: { imageUrl: string; description: string; date: string; }[] }[] = [];
@@ -39,18 +44,20 @@ export default function UsersPage() {
       {children.length === 0 ? (
         <EmptyChildCard onRegisterClick={() => router.push('/users/register-child')} />
       ) : (
-        <div className="grid grid-cols-2 gap-5 mb-4">
-          {children.map((child, index) => (
-            <ChildCard
-              key={index}
-              id={`${index}`}
-              name={child.name}
+        <div className='flex justify-center mb-4'>
+          <div className="grid grid-cols-2 gap-6">
+            {children.map((child, index) => (
+              <ChildCard
+                key={index}
+                id={`${index}`}
+                name={child.name}
               grade={child.grade}
-              selected={selectedIndex === index}
-              onClick={() => setSelectedIndex(index)}
-            />
-          ))}
-          <AddChildCard />
+                selected={selectedIndex === index}
+                onClick={() => setSelectedIndex(index)}
+              />
+            ))}
+            <AddChildCard />
+          </div>
         </div>
       )}
 

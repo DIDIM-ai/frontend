@@ -1,5 +1,3 @@
-'use client';
-
 import Image from 'next/image';
 import { AnimatedCounter } from '@/app/login/components/AnimatedCounter';
 
@@ -24,7 +22,7 @@ export default function LoginPage() {
       />
 
     <button
-      className="w-[200px] h-[45px] flex items-center justify-center gap-2 bg-[#FEE500] rounded-md shadow text-black font-semibold cursor-pointer"
+      className="w-[300px] h-[50px] flex items-center justify-center gap-2 bg-[#FEE500] rounded-md shadow text-black font-semibold cursor-pointer"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
