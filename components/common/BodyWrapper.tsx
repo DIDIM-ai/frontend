@@ -23,7 +23,7 @@ export function BodyWrapper({ children }: Props) {
       {isResultPage && <ResultHeader />}
       <div className="pb-20">
         {children}
-        <MenuBar />
+        {(!isExcluded || isResultPage) && <MenuBar />}
       </div>
     </div>
   );
