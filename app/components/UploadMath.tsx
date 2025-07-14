@@ -12,6 +12,8 @@ export function UploadMath() {
   const [stream, setStream] = useState<MediaStream | null>(null);
   const [isUploading, setIsUploading] = useState(false);
 
+  const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+
   const startCamera = async () => {
     setShowCamera(true);
 
@@ -48,7 +50,7 @@ export function UploadMath() {
     formData.append('problemType', 'math');
 
     try {
-      const response = await fetch('/api/math/solve', {
+      const response = await fetch(`${API_BASE_URL}/api/math/solve`, {
         method: 'POST',
         body: formData,
       });
