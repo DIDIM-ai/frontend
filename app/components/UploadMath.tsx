@@ -98,7 +98,7 @@ export function UploadMath() {
             <GalleryUpload onUpload={handleFileUpload} />
             <Button
               variant="default"
-              className="w-[130px]"
+              className="w-[calc(50%-15px)]"
               onClick={startCamera}
               disabled={isUploading}
             >
