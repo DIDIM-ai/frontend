@@ -29,7 +29,7 @@ export function GalleryUpload({ onUpload }: GalleryUploadProps) {
         onChange={handleFileChange}
         className="hidden"
       />
-      <Button variant="outline" className="w-[130px]" onClick={handleClick}>
+      <Button variant="outline" className="w-[calc(50%-15px)]" onClick={handleClick}>
         <FileImage />
         <p>갤러리</p>
       </Button>
