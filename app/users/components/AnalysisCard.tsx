@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
-import Image from 'next/image';
+import { ListCard } from '@/components/ui/listcard';
 
 type Analysis = {
   imageUrl: string;
@@ -21,10 +21,12 @@ export function AnalysisCard({ analyses }: AnalysisCardProps) {
   const [isLoading, setIsLoading] = useState(false);
   const { ref, inView } = useInView();
 
+  // 분석 대상이 바뀌면 초기화
   useEffect(() => {
     setVisibleCount(ITEMS_PER_PAGE);
   }, [analyses]);
 
+  // 무한 스크롤 처리
   useEffect(() => {
     if (inView && !isLoading && visibleCount < analyses.length) {
       setIsLoading(true);
@@ -42,26 +44,15 @@ export function AnalysisCard({ analyses }: AnalysisCardProps) {
   }
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-2.5">
       {analyses.slice(0, visibleCount).map((item, idx) => (
-        <div
+        <ListCard
           key={idx}
-          className="flex items-center gap-4 rounded-[5px] border p-2.5 w-full bg-white"
-        >
-          <Image
-            src={item.imageUrl}
-            alt="분석 이미지"
-            width={80}
-            height={80}
-            className="rounded-md"
-          />
-          <div className="flex flex-col gap-[5px]">
-            <div className="line-clamp-2 font-medium text-sm ">
-              {item.description}
-            </div>
-            <div className="text-gray-500 text-xs">{item.date}</div>
-          </div>
-        </div>
+          id={idx}
+          imageSrc={item.imageUrl}
+          text={item.description}
+          date={item.date}
+        />
       ))}
 
       {isLoading && (
@@ -69,6 +60,7 @@ export function AnalysisCard({ analyses }: AnalysisCardProps) {
           <div className="w-6 h-6 border-4 border-gray-100 border-t-primary rounded-full animate-spin" />
         </div>
       )}
+
       {visibleCount < analyses.length && <div ref={ref} className="h-6" />}
     </div>
   );
