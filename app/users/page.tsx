@@ -7,6 +7,7 @@ import { ChildCard } from './components/ChildCard';
 import { AddChildCard } from './components/AddChildCard';
 import { EmptyChildCard } from './components/EmptyChild';
 import { AnalysisCard } from './components/AnalysisCard'; 
+import { WithdrawButton } from './components/WithdrawButton';
 
 export default function UsersPage() {
   const router = useRouter();
@@ -28,6 +29,8 @@ export default function UsersPage() {
       analyses: [],
     },
   ];
+
+  //const children: { name: string; grade: string; analyses: { imageUrl: string; description: string; date: string; }[] }[] = [];
 
   return (
     <div>
@@ -51,11 +54,16 @@ export default function UsersPage() {
         </div>
       )}
 
-      <h2 className="text-lg font-semibold mb-4">이전 분석 기록</h2>
+      <h2 className="text-lg font-semibold my-4">이전 분석 기록</h2>
 
       {selectedIndex !== null && (
         <AnalysisCard analyses={children[selectedIndex].analyses} />
       )}
+
+      <div className="flex flex-col items-start gap-4 mt-10 text-sm text-gray-300">
+        <button onClick={() => { alert("로그아웃"); router.push("/login"); }}>로그아웃</button>
+        <WithdrawButton />
+      </div>
     </div>
   );
 }
