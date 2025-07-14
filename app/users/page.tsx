@@ -2,23 +2,32 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+
 import { ChildCard } from './components/ChildCard';
 import { AddChildCard } from './components/AddChildCard';
-import { EmptyChildCard } from './components/EmptyChild'; 
+import { EmptyChildCard } from './components/EmptyChild';
+import { AnalysisCard } from './components/AnalysisCard'; 
 
 export default function UsersPage() {
   const router = useRouter();
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
 
   const children = [
-    { name: '자녀 1', grade: '초등학교 4학년' },
-    { name: '자녀 2', grade: '초등학교 3학년' },
-    { name: '자녀 3', grade: '초등학교 3학년' },
-    { name: '자녀 4', grade: '초등학교 3학년' },
-    { name: '자녀 5', grade: '초등학교 3학년' },
+    {
+      name: '자녀 1',
+      grade: '초등학교 4학년',
+      analyses: Array.from({ length: 20 }, (_, i) => ({
+        imageUrl: '/assets/example.png',
+        description: `문제 ${i + 1}입니다. 자녀의 문제 풀이 분석입니다.`,
+        date: '2025.07.10',
+      })),
+    },
+    {
+      name: '자녀 2',
+      grade: '초등학교 3학년',
+      analyses: [],
+    },
   ];
-
-  //const children: { name: string; grade: string }[] = [];
 
   return (
     <div>
@@ -41,7 +50,12 @@ export default function UsersPage() {
           <AddChildCard />
         </div>
       )}
+
       <h2 className="text-lg font-semibold mb-4">이전 분석 기록</h2>
+
+      {selectedIndex !== null && (
+        <AnalysisCard analyses={children[selectedIndex].analyses} />
+      )}
     </div>
   );
 }
