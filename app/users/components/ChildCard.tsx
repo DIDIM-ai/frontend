@@ -12,7 +12,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { MoreVertical } from 'lucide-react';
 import { useState } from 'react';
-import { ConfirmDeleteModal } from './ConfirmDeleteModal';
+import { ConfirmModal } from '@/components/common/ConfirmModal';
 
 type ChildCardProps = {
   id: string;
@@ -107,12 +107,14 @@ export function ChildCard({
       </section>
 
       {/* 삭제 확인 모달 */}
-      <ConfirmDeleteModal
-        open={showModal}
-        onClose={() => setShowModal(false)}
-        onConfirm={handleDelete}
-        childName={name}
-      />
+    <ConfirmModal
+      open={showModal}
+      onClose={() => setShowModal(false)}
+      onConfirm={handleDelete}
+      message={`${name} 프로필을 삭제하시겠습니까?`}
+      cancelText="취소"
+      confirmText="삭제"
+    />
     </>
   );
 }
