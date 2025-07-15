@@ -51,7 +51,7 @@ export function UploadMath() {
     formData.append('problemType', 'math');
 
     try {
-      const response = await fetch(`${API_BASE_URL}/api/math/solve`, {
+      const response = await fetch(`${API_BASE_URL}/api/public/math/solve`, {
         method: 'POST',
         body: formData,
       });
