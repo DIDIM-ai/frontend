@@ -1,11 +1,12 @@
 'use client';
 
 import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Camera, Loader2 } from 'lucide-react';
+import { Camera } from 'lucide-react';
 import { GalleryUpload } from '@/app/components/upload/GalleryUpload';
 import { CameraCapture } from '@/app/components/upload/CameraCapture';
-import { toast } from 'sonner';
+import { toast, Toaster } from 'sonner';
+import { Button } from '@/components/ui/button';
+import { LoadingModal } from '@/components/common/LoadingModal';
 
 export function UploadMath() {
   const [showCamera, setShowCamera] = useState(false);
@@ -50,7 +51,7 @@ export function UploadMath() {
     formData.append('problemType', 'math');
 
     try {
-      const response = await fetch(`${API_BASE_URL}/api/math/solve`, {
+      const response = await fetch(`${API_BASE_URL}/api/public/math/solve`, {
         method: 'POST',
         body: formData,
       });
@@ -67,18 +68,12 @@ export function UploadMath() {
       toast.success('문제가 성공적으로 업로드되었습니다!');
     } catch (error) {
       console.error('업로드 실패:', error);
-      toast.error(
-        `업로드 중 오류가 발생했습니다: ${
-          error instanceof Error ? error.message : '알 수 없는 오류'
-        }`,
-      );
+      toast.error('업로드에 실패했습니다. 새로고침 후 다시 시도해주세요.');
     } finally {
       setIsUploading(false);
       stopCamera();
     }
   };
-
-  console.log(showCamera);
 
   return (
     <section>
@@ -113,13 +108,9 @@ export function UploadMath() {
         <CameraCapture onCapture={handleFileUpload} stream={stream} stopStream={stopCamera} />
       )}
       {isUploading && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-lg flex flex-col items-center">
-            <Loader2 className="h-8 w-8 animate-spin text-primary mb-3" />
-            <p>문제 업로드 중...</p>
-          </div>
-        </div>
+        <LoadingModal title={'AI가 문제를 풀고있어요!'} desc={'잠시만 기다려주세요 :)'} />
       )}
+      <Toaster position="bottom-center" />
     </section>
   );
 }

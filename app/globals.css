@@ -142,3 +142,23 @@ li {
     @apply bg-background text-foreground;
   }
 }
+
+@keyframes slide {
+  0%, 100% { bottom: -35px; }
+  25%, 75% { bottom: -2px; }
+  20%, 80% { bottom: 2px; }
+}
+
+@keyframes rotate {
+  0% { transform: rotate(-15deg); }
+  25%, 75% { transform: rotate(0deg); }
+  100% { transform: rotate(25deg); }
+}
+
+.loader-before {
+  animation: slide 2s infinite ease-in-out alternate;
+}
+
+.loader-after {
+  animation: rotate 2s infinite ease-in-out;
+}
