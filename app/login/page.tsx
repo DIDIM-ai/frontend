@@ -1,15 +1,39 @@
+'use client';
+
+import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { AnimatedCounter } from '@/app/login/components/AnimatedCounter';
 
 export default function LoginPage() {
+  const [problemCount, setProblemCount] = useState<number | null>(null);
+
+  useEffect(() => {
+    const fetchProblemCount = async () => {
+      try {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/public/math/count`);
+        const data = await res.json();
+        setProblemCount(data); 
+      } catch (error) {
+        console.error('문제 수 불러오기 실패:', error);
+        setProblemCount(0);
+      }
+    };
+
+    fetchProblemCount();
+  }, []);
+
   return (
     <div className="flex flex-col items-center justify-center">
       <div className="h-[50px]" />
 
-      <p className="text-base mb-10">지금까지 분석 된 문제 수</p>
+      <p className="text-base mb-10">지금까지 분석된 문제 수</p>
 
-      <h1 className="text-6xl font-bold text-primary drop-shadow-[0_8px_4px_rgba(255,119,16,0.6)] mb-20">
-        <AnimatedCounter targetNumber={12254} />
+      <h1 className="text-6xl font-black text-primary drop-shadow-[0_8px_4px_rgba(255,119,16,0.6)] mb-20">
+        {problemCount !== null ? (
+          <AnimatedCounter targetNumber={problemCount} />
+        ) : (
+          <div>0</div> 
+        )}
       </h1>
 
       <Image
@@ -34,7 +58,6 @@ export default function LoginPage() {
       </svg>
       <span>카카오 로그인</span>
     </button>
-
     </div>
   );
 }
