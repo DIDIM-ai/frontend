@@ -21,7 +21,7 @@ export function AnalysisResult() {
       setError(null);
       try {
         const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
-        const response = await fetch(`${API_BASE_URL}/api/math?page=0&size=3`);
+        const response = await fetch(`${API_BASE_URL}/api/math/all-logs?page=0&size=3`);
         if (!response.ok) {
           throw new Error('데이터를 불러오지 못했습니다.');
         }
