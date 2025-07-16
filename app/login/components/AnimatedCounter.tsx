@@ -9,7 +9,7 @@ interface AnimatedCounterProps {
   duration?: number;
 }
 
-export function AnimatedCounter({ targetNumber, className = '', duration = 3 }: AnimatedCounterProps) {
+export function AnimatedCounter({ targetNumber, className = '', duration = 0.5 }: AnimatedCounterProps) {
   const count = useMotionValue(0);
   const [displayValue, setDisplayValue] = useState('0');
 
