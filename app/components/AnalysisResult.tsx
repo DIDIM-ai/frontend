@@ -5,12 +5,8 @@ import { ListCard } from '@/components/ui/listcard';
 
 interface AnalysisResultItem {
   logSolveId: number;
-  image: {
-    fileName: string;
-  };
-  result: {
-    problem_title: string;
-  };
+  imageUrl: string;
+  problemTitle: string;
   uploadedAt: string;
 }
 
@@ -40,6 +36,8 @@ export function AnalysisResult() {
     fetchResults();
   }, []);
 
+  console.log(results);
+
   return (
     <section>
       <h3 className="text-xl font-bold mb-2.5">최근 분석 결과</h3>
@@ -50,8 +48,8 @@ export function AnalysisResult() {
           <ListCard
             key={item.logSolveId}
             id={item.logSolveId}
-            imageSrc={item.image.fileName}
-            text={item.result.problem_title}
+            imageSrc={item.imageUrl}
+            text={item.problemTitle}
             date={item.uploadedAt.split('T')[0]}
           />
         ))}
