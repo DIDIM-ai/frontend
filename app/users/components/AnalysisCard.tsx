@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { ListCard } from '@/components/ui/listcard';
+import { ListCardSkeleton } from '../components/ListCardSkeleton';
 
 interface AnalysisResultItem {
   logSolveId: number;
@@ -18,6 +19,7 @@ export function AnalysisCard() {
   const [visibleLogs, setVisibleLogs] = useState<AnalysisResultItem[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [isInitialLoading, setIsInitialLoading] = useState(true); 
   const { ref, inView } = useInView();
 
   const fetchLogs = async () => {
@@ -28,6 +30,8 @@ export function AnalysisCard() {
       setVisibleLogs(data.logs?.slice(0, ITEMS_PER_PAGE));
     } catch (err) {
       setError(err instanceof Error ? err.message : '데이터를 불러오지 못했습니다.');
+    } finally {
+      setIsInitialLoading(false); 
     }
   };
 
@@ -39,7 +43,10 @@ export function AnalysisCard() {
     if (inView && !loading && visibleLogs.length < allLogs.length) {
       setLoading(true);
       setTimeout(() => {
-        const nextItems = allLogs.slice(visibleLogs.length, visibleLogs.length + ITEMS_PER_PAGE);
+        const nextItems = allLogs.slice(
+          visibleLogs.length,
+          visibleLogs.length + ITEMS_PER_PAGE
+        );
         setVisibleLogs(prev => [...prev, ...nextItems]);
         setLoading(false);
       }, 600);
@@ -47,7 +54,20 @@ export function AnalysisCard() {
   }, [inView, loading, visibleLogs, allLogs]);
 
   if (error) return <p className="text-sm text-red-500">{error}</p>;
-  if (!allLogs.length) return <p className="text-sm text-gray-500">분석 기록이 없습니다.</p>;
+
+  if (isInitialLoading) {
+    return (
+      <div className="flex flex-col gap-2.5">
+        {Array.from({ length: ITEMS_PER_PAGE }).map((_, idx) => (
+          <ListCardSkeleton key={idx} />
+        ))}
+      </div>
+    );
+  }
+
+  if (!allLogs.length) {
+    return <p className="text-sm text-gray-500">분석 기록이 없습니다.</p>;
+  }
 
   return (
     <div className="flex flex-col gap-2.5">
