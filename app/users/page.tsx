@@ -10,16 +10,24 @@ import { AnalysisCard } from './components/AnalysisCard';
 import { WithdrawButton } from './components/WithdrawButton';
 
 import { useUserStore } from '@/lib/store/useUserStore';
-import { authorizedFetch } from '@/lib/authorizedFetch'; 
+import { authorizedFetch } from '@/lib/authorizedFetch';
+
+interface Child {
+  id: number;
+  name: string;
+  schoolGrade: number;
+  parentId: number;
+  profileImageId: number | null;
+}
 
 export default function UsersPage() {
   const router = useRouter();
   const [selectedIndex, setSelectedIndex] = useState<number>(0);
   const [isLoading, setIsLoading] = useState(true);
+  const [children, setChildren] = useState<Child[]>([]);
 
   const setUser = useUserStore((state) => state.setUser);
   const clearUser = useUserStore((state) => state.clearUser);
-  const user = useUserStore((state) => state.user);
 
   useEffect(() => {
     const token = localStorage.getItem('accessToken');
@@ -32,13 +40,20 @@ export default function UsersPage() {
     const fetchUserInfo = async () => {
       try {
         const res = await authorizedFetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/test/api/temp/user/me`);
-        if (!res.ok) throw new Error(`응답 실패: ${res.status}`);
-        const data = await res.json();
-        console.log('사용자 정보 확인:', data);
-        setUser(data);
+        if (!res.ok) throw new Error(`사용자 정보 응답 실패: ${res.status}`);
+        const userData = await res.json();
+        setUser(userData);
+
+        const childrenRes = await authorizedFetch(
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user-jrs/parent/${userData.userId}`
+        );
+        if (!childrenRes.ok) throw new Error('자녀 정보 조회 실패');
+
+        const childList: Child[] = await childrenRes.json();
+        setChildren(childList);
         setIsLoading(false);
       } catch (error) {
-        console.error('인증 실패:', error);
+        console.error('인증 또는 자녀 조회 실패:', error);
         localStorage.removeItem('accessToken');
         clearUser();
         router.replace('/login');
@@ -48,35 +63,12 @@ export default function UsersPage() {
     fetchUserInfo();
   }, [router, setUser, clearUser]);
 
-  if (isLoading) {
-    return <div className="text-center mt-20">사용자 인증 중...</div>;
-  }
-
-  const children = [
-    {
-      name: '자녀 1',
-      grade: '초등학교 4학년',
-      analyses: Array.from({ length: 20 }, (_, i) => ({
-        imageUrl: '/assets/example.png',
-        description: `문제 ${i + 1}입니다. 자녀의 문제 풀이 분석입니다.`,
-        date: '2025.07.10',
-      })),
-    },
-    {
-      name: '자녀 2',
-      grade: '초등학교 3학년',
-      analyses: [],
-    },
-    {
-      name: '자녀 3',
-      grade: '초등학교 6학년',
-      analyses: [],
-    },
-  ];
+  if (isLoading) return <div className="text-center mt-20">로딩 중...</div>;
 
   return (
     <div>
       <h2 className="text-lg font-semibold mb-2">자녀 관리</h2>
+
       {children.length === 0 ? (
         <EmptyChildCard onRegisterClick={() => router.push('/users/register-child')} />
       ) : (
@@ -84,10 +76,11 @@ export default function UsersPage() {
           <div className="grid grid-cols-2 gap-6">
             {children.map((child, index) => (
               <ChildCard
-                key={index}
-                id={`${index}`}
+                key={`child-${child.id}`} 
+                id={`${child.id}`}
                 name={child.name}
-                grade={child.grade}
+                grade={String(child.schoolGrade)}
+                profileImageId={child.profileImageId}
                 selected={selectedIndex === index}
                 onClick={() => setSelectedIndex(index)}
               />
@@ -98,7 +91,6 @@ export default function UsersPage() {
       )}
 
       <h2 className="text-lg font-semibold my-4">이전 분석 기록</h2>
-
       {selectedIndex !== null && <AnalysisCard />}
 
       <div className="flex flex-col items-start gap-4 mt-10 text-sm text-gray-300">
