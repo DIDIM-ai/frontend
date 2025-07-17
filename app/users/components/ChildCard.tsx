@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import {
@@ -8,16 +9,17 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuPortal,
-  DropdownMenuSeparator
+  DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu';
 import { MoreVertical } from 'lucide-react';
-import { useState } from 'react';
 import { ConfirmModal } from '@/components/common/ConfirmModal';
 
 type ChildCardProps = {
   id: string;
   name: string;
   grade: string;
+  profileImageId?: number | null;
+  parentId: number;
   selected?: boolean;
   onClick: () => void;
 };
@@ -26,14 +28,20 @@ export function ChildCard({
   id,
   name,
   grade,
+  profileImageId,
+  parentId,
   selected = false,
-  onClick
+  onClick,
 }: ChildCardProps) {
   const [showModal, setShowModal] = useState(false);
+  const [imageUrl, setImageUrl] = useState('/assets/profile.png');
   const router = useRouter();
 
+
+  const handleOpenModal = () => setShowModal(true);
+  const handleCloseModal = () => setShowModal(false);
+
   const handleDelete = () => {
-    // 실제 삭제 로직 연결 필요
     alert(`${name} 삭제됨`);
     setShowModal(false);
   };
@@ -42,32 +50,56 @@ export function ChildCard({
     router.push(`/users/edit/${id}`);
   };
 
+  useEffect(() => {
+    const fetchImageUrl = async () => {
+      if (!profileImageId) return;
+
+      try {
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/images/${profileImageId}?userId=${parentId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+            },
+          }
+        );
+
+        if (!res.ok) throw new Error('이미지 URL 조회 실패');
+        const data = await res.json();
+        if (data.url) {
+          setImageUrl(data.url);
+        }
+      } catch (err) {
+        console.error('프로필 이미지 불러오기 실패:', err);
+      }
+    };
+
+    fetchImageUrl();
+  }, [profileImageId, parentId]);
+
+
   return (
     <>
       <section
         onClick={onClick}
-        className={`
-          relative w-[130px] h-[130px]
-          rounded-[5px]
-          flex flex-col items-center justify-center border border-primary
-          ${selected ? 'bg-primary text-white' : 'bg-white text-black'}
-          cursor-pointer
-          shadow-[0_2px_5px_0_theme('colors.secondary.DEFAULT')]
-        `}
+        className={`relative w-[130px] h-[130px] rounded-[5px] flex flex-col items-center justify-center border border-primary
+        ${selected ? 'bg-primary text-white' : 'bg-white text-black'}
+        cursor-pointer shadow-[0_2px_5px_0_theme('colors.secondary.DEFAULT')]`}
       >
-        <div className="rounded-full border border-primary flex items-center justify-center mb-1">
+        <div className="relative w-[60px] h-[60px] rounded-full overflow-hidden border border-primary mb-1">
           <Image
-            src="/assets/profile.png"
+            src={imageUrl}
             alt="자녀 프로필"
-            width={50}
-            height={50}
+            fill
+            className="object-cover"
           />
         </div>
 
         <div className="font-semibold">{name}</div>
-        <div className={`text-sm ${selected ? '' : 'text-gray-500'}`}>{grade}</div>
+        <div className={`text-sm ${selected ? '' : 'text-gray-500'}`}>
+          초등학교 {grade}학년
+        </div>
 
-        {/* 케밥 메뉴 */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button
@@ -97,7 +129,7 @@ export function ChildCard({
               <DropdownMenuSeparator className="h-[1px] bg-primary" />
               <DropdownMenuItem
                 className="justify-center font-semibold"
-                onSelect={() => setShowModal(true)}
+                onSelect={handleOpenModal}
               >
                 삭제
               </DropdownMenuItem>
@@ -106,15 +138,14 @@ export function ChildCard({
         </DropdownMenu>
       </section>
 
-      {/* 삭제 확인 모달 */}
-    <ConfirmModal
-      open={showModal}
-      onClose={() => setShowModal(false)}
-      onConfirm={handleDelete}
-      message={`${name} 프로필을 삭제하시겠습니까?`}
-      cancelText="취소"
-      confirmText="삭제"
-    />
+      <ConfirmModal
+        open={showModal}
+        onClose={handleCloseModal}
+        onConfirm={handleDelete}
+        message={`${name} 프로필을 삭제하시겠습니까?`}
+        cancelText="취소"
+        confirmText="삭제"
+      />
     </>
   );
 }
