@@ -22,6 +22,7 @@ type ChildCardProps = {
   parentId: number;
   selected?: boolean;
   onClick: () => void;
+  onDeleted?: (id: string) => void;
 };
 
 export function ChildCard({
@@ -32,18 +33,32 @@ export function ChildCard({
   parentId,
   selected = false,
   onClick,
+  onDeleted,
 }: ChildCardProps) {
   const [showModal, setShowModal] = useState(false);
   const [imageUrl, setImageUrl] = useState('/assets/profile.png');
   const router = useRouter();
 
-
   const handleOpenModal = () => setShowModal(true);
   const handleCloseModal = () => setShowModal(false);
 
-  const handleDelete = () => {
-    alert(`${name} 삭제됨`);
-    setShowModal(false);
+  const handleDelete = async () => {
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user-jrs/${id}`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+        },
+      });
+
+      if (!res.ok) throw new Error('자녀 삭제 실패');
+
+      setShowModal(false);
+      onDeleted?.(id);
+    } catch (err) {
+      console.error('자녀 삭제 오류:', err);
+      setShowModal(false);
+    }
   };
 
   const handleEdit = () => {
@@ -76,7 +91,6 @@ export function ChildCard({
 
     fetchImageUrl();
   }, [profileImageId, parentId]);
-
 
   return (
     <>
