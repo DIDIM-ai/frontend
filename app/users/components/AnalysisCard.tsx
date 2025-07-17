@@ -12,7 +12,6 @@ interface AnalysisResultItem {
   uploadedAt: string;
 }
 
-
 const ITEMS_PER_PAGE = 5;
 
 export function AnalysisCard() {
