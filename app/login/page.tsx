@@ -10,9 +10,9 @@ export default function LoginPage() {
   useEffect(() => {
     const fetchProblemCount = async () => {
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/public/math/count`);
+        const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/math/logs-total`);
         const data = await res.json();
-        setProblemCount(data); 
+        setProblemCount(data.total); 
       } catch (error) {
         console.error('문제 수 불러오기 실패:', error);
         setProblemCount(0);
