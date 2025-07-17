@@ -22,12 +22,19 @@ export function AnalysisResult() {
       setLoading(true);
       setError(null);
       try {
-        const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
-        const response = await fetch(`${API_BASE_URL}/api/math/all-logs?page=0&size=3`);
-        if (!response.ok) {
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/math/all-logs?page=0&size=3`,
+          {
+            method: 'GET',
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+            },
+          },
+        );
+        if (!res.ok) {
           throw new Error('데이터를 불러오지 못했습니다.');
         }
-        const data = await response.json();
+        const data = await res.json();
         setResults(data.logs);
       } catch (err) {
         setError(err instanceof Error ? err.message : '알 수 없는 오류');

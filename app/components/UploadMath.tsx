@@ -15,7 +15,6 @@ export function UploadMath() {
   const [isUploading, setIsUploading] = useState(false);
 
   const router = useRouter();
-  const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
   const startCamera = async () => {
     setShowCamera(true);
@@ -53,19 +52,22 @@ export function UploadMath() {
     formData.append('problemType', 'math');
 
     try {
-      const response = await fetch(`${API_BASE_URL}/api/math/solve`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/math/solve?grade=1`, {
         method: 'POST',
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+        },
         body: formData,
       });
 
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({ message: '알 수 없는 오류' }));
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({ message: '알 수 없는 오류' }));
         throw new Error(
-          `HTTP error! status: ${response.status}, message: ${errorData.message || '업로드 실패'}`,
+          `HTTP error! status: ${res.status}, message: ${errorData.message || '업로드 실패'}`,
         );
       }
 
-      const result = await response.json();
+      const result = await res.json();
       router.push(`/result/${result.logSolveId}`);
     } catch (error) {
       console.error('업로드 실패:', error);

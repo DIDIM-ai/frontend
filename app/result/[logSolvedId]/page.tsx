@@ -25,8 +25,12 @@ export default function ResultPage() {
       setError(null);
 
       try {
-        const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
-        const res = await fetch(`${API_BASE_URL}/api/math/${logSolvedId}`);
+        const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/math/${logSolvedId}`, {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+          },
+        });
         if (!res.ok) throw new Error('문제 데이터를 불러오지 못했습니다.');
         const data: ProblemData = await res.json();
         setProblem(data);
