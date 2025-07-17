@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import Image from 'next/image';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -15,7 +15,7 @@ import {
 interface ChildFormProps {
   mode?: 'register' | 'edit';
   parentId: number;
-  defaultValues?: {
+  userInput?: {
     name: string;
     grade: number;
     profileUrl?: string;
@@ -36,17 +36,37 @@ const gradeOptions = [
 export function ChildForm({
   mode = 'register',
   parentId,
-  defaultValues,
+  userInput,
   onSubmit,
   onCancel,
 }: ChildFormProps) {
-  const [name, setName] = useState(defaultValues?.name || '');
-  const [grade, setGrade] = useState<number>(defaultValues?.grade || 1);
-  const [profileUrl] = useState(defaultValues?.profileUrl || '/assets/profile.png');
+  const [name, setName] = useState(userInput?.name || '');
+  const [grade, setGrade] = useState<number>(userInput?.grade || 1);
+  const [profileUrl, setProfileUrl] = useState(userInput?.profileUrl || '/assets/profile.png');
   const [uploading, setUploading] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [nameError, setNameError] = useState('');
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setSelectedFile(file);
+      const tempUrl = URL.createObjectURL(file);
+      setProfileUrl(tempUrl);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!name.trim()) {
+      setNameError('닉네임을 입력해주세요.');
+      return;
+    } else {
+      setNameError('');
+    }
+
     setUploading(true);
 
     try {
@@ -56,11 +76,31 @@ export function ChildForm({
         body: JSON.stringify({
           parentId,
           name,
-          schoolGrade: grade, 
+          schoolGrade: grade,
         }),
       });
 
       if (!res.ok) throw new Error('자녀 등록 실패');
+      const jrData = await res.json();
+      const userJrId = jrData.userJrId;
+
+      if (selectedFile) {
+        const formData = new FormData();
+        formData.append('file', selectedFile);
+
+        const imgRes = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/images/upload`, {
+          method: 'POST',
+          body: formData,
+        });
+
+        if (!imgRes.ok) throw new Error('이미지 업로드 실패');
+        const imgData = await imgRes.json();
+        const imageId = imgData.imageId;
+
+        await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user-jrs/${userJrId}/profile-image?imageId=${imageId}`, {
+          method: 'PATCH',
+        });
+      }
 
       onSubmit();
     } catch (err) {
@@ -75,7 +115,7 @@ export function ChildForm({
     <form onSubmit={handleSubmit} className="flex flex-col items-center gap-8 w-full max-w-xs mx-auto">
       {/* 프로필 사진 */}
       <div className="relative self-start">
-        <div className="cursor-pointer">
+        <div className="cursor-pointer" onClick={() => fileInputRef.current?.click()}>
           <Image
             src={profileUrl}
             alt="프로필"
@@ -90,12 +130,24 @@ export function ChildForm({
         >
           +
         </button>
+        <input
+          type="file"
+          accept="image/*"
+          ref={fileInputRef}
+          className="hidden"
+          onChange={handleFileChange}
+        />
       </div>
 
       {/* 이름 입력 */}
       <div className="w-full">
         <label className="block text-sm font-medium mb-2">이름 (닉네임)</label>
-        <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="이름을 입력하세요" />
+        <Input
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          placeholder="이름을 입력하세요"
+        />
+        {nameError && <p className="text-sm text-red-500 mt-1">{nameError}</p>}
       </div>
 
       {/* 학년 선택 */}
