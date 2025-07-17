@@ -39,11 +39,15 @@ export default function UsersPage() {
 
     const fetchUserInfo = async () => {
       try {
-        const res = await authorizedFetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/test/api/temp/user/me`);
+        // 1. 사용자 정보 요청
+        const res = await authorizedFetch(
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/test/api/temp/user/me`
+        );
         if (!res.ok) throw new Error(`사용자 정보 응답 실패: ${res.status}`);
         const userData = await res.json();
         setUser(userData);
 
+        // 2. 자녀 목록 요청
         const childrenRes = await authorizedFetch(
           `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user-jrs/parent/${userData.userId}`
         );
@@ -81,6 +85,7 @@ export default function UsersPage() {
                 name={child.name}
                 grade={String(child.schoolGrade)}
                 profileImageId={child.profileImageId}
+                parentId={child.parentId}
                 selected={selectedIndex === index}
                 onClick={() => setSelectedIndex(index)}
               />
