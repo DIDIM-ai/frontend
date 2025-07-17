@@ -34,7 +34,7 @@ export function ChildCard({
   onClick,
 }: ChildCardProps) {
   const [showModal, setShowModal] = useState(false);
-  const [imageUrl, setImageUrl] = useState('/assets/profile.png'); // 기본 이미지
+  const [imageUrl, setImageUrl] = useState('/assets/profile.png'); 
   const router = useRouter();
 
   useEffect(() => {
@@ -81,13 +81,12 @@ export function ChildCard({
         ${selected ? 'bg-primary text-white' : 'bg-white text-black'}
         cursor-pointer shadow-[0_2px_5px_0_theme('colors.secondary.DEFAULT')]`}
       >
-        <div className="rounded-full border border-primary flex items-center justify-center mb-1 overflow-hidden">
+        <div className="relative w-[60px] h-[60px] rounded-full overflow-hidden border border-primary mb-1">
           <Image
             src={imageUrl}
             alt="자녀 프로필"
-            width={50}
-            height={50}
-            className="rounded-full object-cover"
+            fill
+            className="object-cover"
           />
         </div>
 
