@@ -9,14 +9,20 @@ import { EmptyChildCard } from './components/EmptyChild';
 import { AnalysisCard } from './components/AnalysisCard';
 import { WithdrawButton } from './components/WithdrawButton';
 
+import { useUserStore } from '@/lib/store/useUserStore';
+import { authorizedFetch } from '@/lib/authorizedFetch'; 
+
 export default function UsersPage() {
   const router = useRouter();
   const [selectedIndex, setSelectedIndex] = useState<number>(0);
   const [isLoading, setIsLoading] = useState(true);
 
+  const setUser = useUserStore((state) => state.setUser);
+  const clearUser = useUserStore((state) => state.clearUser);
+  const user = useUserStore((state) => state.user);
+
   useEffect(() => {
     const token = localStorage.getItem('accessToken');
-
     if (!token) {
       console.warn('Access token 없음 → 로그인 페이지로 이동');
       router.replace('/login');
@@ -25,29 +31,22 @@ export default function UsersPage() {
 
     const fetchUserInfo = async () => {
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/test/api/temp/user/me`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          credentials: 'include', 
-        });
-
-        if (!res.ok) {
-          throw new Error(`응답 실패: ${res.status}`);
-        }
-
+        const res = await authorizedFetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/test/api/temp/user/me`);
+        if (!res.ok) throw new Error(`응답 실패: ${res.status}`);
         const data = await res.json();
         console.log('사용자 정보 확인:', data);
+        setUser(data);
         setIsLoading(false);
       } catch (error) {
         console.error('인증 실패:', error);
         localStorage.removeItem('accessToken');
+        clearUser();
         router.replace('/login');
       }
     };
 
     fetchUserInfo();
-  }, [router]);
+  }, [router, setUser, clearUser]);
 
   if (isLoading) {
     return <div className="text-center mt-20">사용자 인증 중...</div>;
@@ -77,8 +76,7 @@ export default function UsersPage() {
 
   return (
     <div>
-      <h2 className="text-lg font-semibold mb-4">자녀 관리</h2>
-
+      <h2 className="text-lg font-semibold mb-2">자녀 관리</h2>
       {children.length === 0 ? (
         <EmptyChildCard onRegisterClick={() => router.push('/users/register-child')} />
       ) : (
@@ -107,6 +105,7 @@ export default function UsersPage() {
         <button
           onClick={() => {
             localStorage.removeItem('accessToken');
+            clearUser();
             router.push('/login');
           }}
         >
