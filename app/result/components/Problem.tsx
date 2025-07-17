@@ -16,12 +16,12 @@ export function Problem({ problem }: ProblemProps) {
       <div className="relative w-full aspect-[280/200] mb-2.5">
         <Image
           src={`${problem?.image_url}` || '/assets/example.png'}
-          alt="logo"
+          alt="문제 이미지"
           fill
           className="object-fit border border-zinc-200 rounded-lg p-3"
         />
       </div>
-      <p className="px-2">{problem?.problem_text || '문제 정보가 없습니다.'}</p>
+      <p className="px-2 font-semibold">{problem?.problem_text || '문제 정보가 없습니다.'}</p>
     </section>
   );
 }
