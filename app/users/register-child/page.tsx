@@ -1,20 +1,30 @@
 'use client';
 
+import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { ChildForm } from '../components/ChildForm';
+import { useUserStore } from '@/lib/store/useUserStore';
 
 export default function RegisterChildPage() {
   const router = useRouter();
+  const user = useUserStore((state) => state.user);
+
+  useEffect(() => {
+    if (!user) {
+      alert('로그인이 필요합니다.');
+      router.push('/login');
+    }
+  }, [user, router]);
+
+  if (!user) return null;
 
   return (
     <div className="px-4 py-6">
       <h2 className="text-lg font-semibold mb-6">자녀 등록</h2>
       <ChildForm
         mode="register"
-        onSubmit={(data) => {
-          console.log('등록됨:', data);
-          router.push('/users');
-        }}
+        parentId={user.userId} 
+        onSubmit={() => router.push('/users')}
         onCancel={() => router.push('/users')}
       />
     </div>
