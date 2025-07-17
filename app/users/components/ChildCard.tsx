@@ -34,8 +34,21 @@ export function ChildCard({
   onClick,
 }: ChildCardProps) {
   const [showModal, setShowModal] = useState(false);
-  const [imageUrl, setImageUrl] = useState('/assets/profile.png'); 
+  const [imageUrl, setImageUrl] = useState('/assets/profile.png');
   const router = useRouter();
+
+
+  const handleOpenModal = () => setShowModal(true);
+  const handleCloseModal = () => setShowModal(false);
+
+  const handleDelete = () => {
+    alert(`${name} 삭제됨`);
+    setShowModal(false);
+  };
+
+  const handleEdit = () => {
+    router.push(`/users/edit/${id}`);
+  };
 
   useEffect(() => {
     const fetchImageUrl = async () => {
@@ -64,14 +77,6 @@ export function ChildCard({
     fetchImageUrl();
   }, [profileImageId, parentId]);
 
-  const handleDelete = () => {
-    alert(`${name} 삭제됨`);
-    setShowModal(false);
-  };
-
-  const handleEdit = () => {
-    router.push(`/users/edit/${id}`);
-  };
 
   return (
     <>
@@ -124,7 +129,7 @@ export function ChildCard({
               <DropdownMenuSeparator className="h-[1px] bg-primary" />
               <DropdownMenuItem
                 className="justify-center font-semibold"
-                onSelect={() => setShowModal(true)}
+                onSelect={handleOpenModal}
               >
                 삭제
               </DropdownMenuItem>
@@ -135,7 +140,7 @@ export function ChildCard({
 
       <ConfirmModal
         open={showModal}
-        onClose={() => setShowModal(false)}
+        onClose={handleCloseModal}
         onConfirm={handleDelete}
         message={`${name} 프로필을 삭제하시겠습니까?`}
         cancelText="취소"
