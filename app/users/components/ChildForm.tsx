@@ -16,6 +16,7 @@ interface ChildFormProps {
   mode?: 'register' | 'edit';
   parentId: number;
   userInput?: {
+    id?: number;
     name: string;
     grade: number;
     profileUrl?: string;
@@ -70,26 +71,44 @@ export function ChildForm({
     setUploading(true);
 
     try {
-      // 1. 자녀 정보 등록
-      const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user-jrs`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
-        },
-        body: JSON.stringify({
-          parentId,
-          name,
-          schoolGrade: grade,
-        }),
-      });
+      let userJrId: number;
 
-      if (!res.ok) throw new Error('자녀 등록 실패');
-      const jrData = await res.json();
-      console.log('자녀 등록 응답', jrData);
-      const userJrId = jrData.id;
+      if (mode === 'register') {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user-jrs`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+          },
+          body: JSON.stringify({
+            parentId,
+            name,
+            schoolGrade: grade,
+          }),
+        });
 
-      // 2. 이미지 선택 시 S3 업로드 
+        if (!res.ok) throw new Error('자녀 등록 실패');
+        const jrData = await res.json();
+        userJrId = jrData.id;
+      } else if (mode === 'edit' && userInput?.id) {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user-jrs/${userInput.id}`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+          },
+          body: JSON.stringify({
+            name,
+            schoolGrade: grade,
+          }),
+        });
+
+        if (!res.ok) throw new Error('자녀 수정 실패');
+        userJrId = userInput.id;
+      } else {
+        throw new Error('잘못된 요청');
+      }
+
       if (selectedFile) {
         const formData = new FormData();
         formData.append('file', selectedFile);
@@ -109,7 +128,6 @@ export function ChildForm({
         const imgData = await imgRes.json();
         const imageId = imgData.imageId;
 
-        // 3. 자녀 이미지 연결
         await fetch(
           `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user-jrs/${userJrId}/profile-image?imageId=${imageId}`,
           {
@@ -123,7 +141,7 @@ export function ChildForm({
 
       onSubmit();
     } catch (err) {
-      alert('등록 중 오류 발생');
+      alert(`${mode === 'edit' ? '수정' : '등록'} 중 오류 발생`);
       console.error(err);
     } finally {
       setUploading(false);
@@ -197,7 +215,7 @@ export function ChildForm({
           size="lg"
           disabled={uploading}
         >
-          {uploading ? '등록 중...' : mode === 'edit' ? '수정 완료' : '확인'}
+          {uploading ? '처리 중...' : mode === 'edit' ? '수정 완료' : '확인'}
         </Button>
         {onCancel && (
           <Button variant="secondary" type="button" onClick={onCancel} size="lg">
