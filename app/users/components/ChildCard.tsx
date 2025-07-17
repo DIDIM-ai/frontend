@@ -13,6 +13,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { MoreVertical } from 'lucide-react';
 import { ConfirmModal } from '@/components/common/ConfirmModal';
+import { toast } from 'sonner';
 
 type ChildCardProps = {
   id: string;
@@ -53,10 +54,12 @@ export function ChildCard({
 
       if (!res.ok) throw new Error('자녀 삭제 실패');
 
+      toast.success(`${name} 프로필이 삭제되었습니다.`);
       setShowModal(false);
       onDeleted?.(id);
     } catch (err) {
       console.error('자녀 삭제 오류:', err);
+      toast.error('삭제 중 오류가 발생했습니다.');
       setShowModal(false);
     }
   };
