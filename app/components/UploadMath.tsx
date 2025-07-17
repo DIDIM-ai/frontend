@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Camera } from 'lucide-react';
 import { GalleryUpload } from '@/app/components/upload/GalleryUpload';
 import { CameraCapture } from '@/app/components/upload/CameraCapture';
@@ -13,6 +14,7 @@ export function UploadMath() {
   const [stream, setStream] = useState<MediaStream | null>(null);
   const [isUploading, setIsUploading] = useState(false);
 
+  const router = useRouter();
   const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
   const startCamera = async () => {
@@ -64,8 +66,7 @@ export function UploadMath() {
       }
 
       const result = await response.json();
-      console.log('업로드 성공:', result);
-      toast.success('문제가 성공적으로 업로드되었습니다!');
+      router.push(`/result/${result.logSolveId}`);
     } catch (error) {
       console.error('업로드 실패:', error);
       toast.error('업로드에 실패했습니다. 새로고침 후 다시 시도해주세요.');

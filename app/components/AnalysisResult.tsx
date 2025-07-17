@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { ListCard } from '@/components/ui/listcard';
 import { ListCardSkeleton } from '@/components/common/ListCardSkeleton';
+import Link from 'next/link';
 
 interface AnalysisResultItem {
   logSolveId: number;
@@ -42,17 +43,18 @@ export function AnalysisResult() {
   return (
     <section>
       <h3 className="text-xl font-bold mb-2.5">최근 분석 결과</h3>
-    {loading && <ListCardSkeleton count={3} />}
+      {loading && <ListCardSkeleton count={3} />}
       {error && <p className="text-red-500">{error}</p>}
       <ul className="flex flex-col gap-2.5">
         {results.map((item) => (
-          <ListCard
-            key={item.logSolveId}
-            id={item.logSolveId}
-            imageSrc={item.imageUrl}
-            text={item.problemTitle}
-            date={item.uploadedAt.split('T')[0]}
-          />
+          <Link href={`/result/${item.logSolveId}`} key={item.logSolveId}>
+            <ListCard
+              id={item.logSolveId}
+              imageSrc={item.imageUrl}
+              text={item.problemTitle}
+              date={item.uploadedAt.split('T')[0]}
+            />
+          </Link>
         ))}
       </ul>
     </section>

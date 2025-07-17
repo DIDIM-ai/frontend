@@ -12,7 +12,7 @@ export function RootHeader() {
               alt="logo"
               width={90}
               height={30}
-              className="min-h-[30px]"
+              className="min-h-[35px]"
             />
           </Link>
         </li>
