@@ -70,9 +70,13 @@ export function ChildForm({
     setUploading(true);
 
     try {
+      // 1. 자녀 정보 등록
       const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user-jrs`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+        },
         body: JSON.stringify({
           parentId,
           name,
@@ -82,24 +86,39 @@ export function ChildForm({
 
       if (!res.ok) throw new Error('자녀 등록 실패');
       const jrData = await res.json();
-      const userJrId = jrData.userJrId;
+      console.log('자녀 등록 응답', jrData);
+      const userJrId = jrData.id;
 
+      // 2. 이미지 선택 시 S3 업로드 
       if (selectedFile) {
         const formData = new FormData();
         formData.append('file', selectedFile);
 
-        const imgRes = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/images/upload`, {
-          method: 'POST',
-          body: formData,
-        });
+        const imgRes = await fetch(
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/images/upload?userId=${parentId}`,
+          {
+            method: 'POST',
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+            },
+            body: formData,
+          }
+        );
 
         if (!imgRes.ok) throw new Error('이미지 업로드 실패');
         const imgData = await imgRes.json();
         const imageId = imgData.imageId;
 
-        await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user-jrs/${userJrId}/profile-image?imageId=${imageId}`, {
-          method: 'PATCH',
-        });
+        // 3. 자녀 이미지 연결
+        await fetch(
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user-jrs/${userJrId}/profile-image?imageId=${imageId}`,
+          {
+            method: 'PATCH',
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+            },
+          }
+        );
       }
 
       onSubmit();
@@ -112,7 +131,10 @@ export function ChildForm({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col items-center gap-8 w-full max-w-xs mx-auto">
+    <form
+      onSubmit={handleSubmit}
+      className="flex flex-col items-center gap-8 w-full max-w-xs mx-auto"
+    >
       {/* 프로필 사진 */}
       <div className="relative self-start">
         <div className="cursor-pointer" onClick={() => fileInputRef.current?.click()}>
@@ -169,7 +191,12 @@ export function ChildForm({
 
       {/* 버튼 */}
       <div className="w-full flex flex-col gap-1 mt-4">
-        <Button type="submit" className="bg-primary text-white mb-2" size="lg" disabled={uploading}>
+        <Button
+          type="submit"
+          className="bg-primary text-white mb-2"
+          size="lg"
+          disabled={uploading}
+        >
           {uploading ? '등록 중...' : mode === 'edit' ? '수정 완료' : '확인'}
         </Button>
         {onCancel && (
