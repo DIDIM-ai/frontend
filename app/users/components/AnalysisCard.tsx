@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { ListCard } from '@/components/ui/listcard';
 import { ListCardSkeleton } from '@/components/common/ListCardSkeleton';
+import { authorizedFetch } from '@/lib/authorizedFetch'; 
 
 interface AnalysisResultItem {
   logSolveId: number;
@@ -19,19 +20,28 @@ export function AnalysisCard() {
   const [visibleLogs, setVisibleLogs] = useState<AnalysisResultItem[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const [isInitialLoading, setIsInitialLoading] = useState(true); 
+  const [isInitialLoading, setIsInitialLoading] = useState(true);
   const { ref, inView } = useInView();
 
   const fetchLogs = async () => {
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/math/all-logs`);
+      const token = localStorage.getItem('accessToken');
+      if (!token) {
+        setError('로그인이 필요합니다.');
+        setIsInitialLoading(false);
+        return;
+      }
+
+      const res = await authorizedFetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/math/all-logs`);
+      if (!res.ok) throw new Error(`요청 실패: ${res.status}`);
+
       const data = await res.json();
       setAllLogs(data.logs);
       setVisibleLogs(data.logs?.slice(0, ITEMS_PER_PAGE));
     } catch (err) {
       setError(err instanceof Error ? err.message : '데이터를 불러오지 못했습니다.');
     } finally {
-      setIsInitialLoading(false); 
+      setIsInitialLoading(false);
     }
   };
 
