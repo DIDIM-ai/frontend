@@ -90,7 +90,8 @@ export function ChildForm({
         if (!res.ok) throw new Error('자녀 등록 실패');
         const jrData = await res.json();
         userJrId = jrData.id;
-      } else if (mode === 'edit' && userInput?.id) {
+      } 
+      else if (mode === 'edit' && userInput?.id) {
         const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user-jrs/${userInput.id}`, {
           method: 'PATCH',
           headers: {

@@ -19,6 +19,10 @@ export default function EditChildPage() {
 
   const [userInput, setUserInput] = useState<UserInputType | null>(null);
 
+  const handleBackToUsers = () => {
+    router.push('/users');
+  };
+
   useEffect(() => {
     const fetchChild = async () => {
       if (!id) return;
@@ -31,7 +35,6 @@ export default function EditChildPage() {
         });
 
         const data = await res.json();
-        console.log("data: ", data);
         setUserInput({
           id: data.id,
           parentId: data.parentId,
@@ -40,8 +43,8 @@ export default function EditChildPage() {
           profileUrl: '/assets/profile.png',
         });
       } catch (err) {
-        alert('자녀 정보 불러오기 실패');
-        router.push('/users');
+        console.error('자녀 정보 불러오기 실패:', err);
+        handleBackToUsers(); 
       }
     };
 
@@ -57,8 +60,8 @@ export default function EditChildPage() {
         mode="edit"
         parentId={userInput.parentId}
         userInput={userInput}
-        onSubmit={() => router.push('/users')}
-        onCancel={() => router.push('/users')}
+        onSubmit={handleBackToUsers}
+        onCancel={handleBackToUsers}
       />
     </div>
   );
