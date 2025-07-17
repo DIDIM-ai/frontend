@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { ListCard } from '@/components/ui/listcard';
-import { ListCardSkeleton } from '../components/ListCardSkeleton';
+import { ListCardSkeleton } from '@/components/common/ListCardSkeleton';
 
 interface AnalysisResultItem {
   logSolveId: number;
@@ -11,6 +11,7 @@ interface AnalysisResultItem {
   problemTitle: string;
   uploadedAt: string;
 }
+
 
 const ITEMS_PER_PAGE = 5;
 
@@ -56,13 +57,7 @@ export function AnalysisCard() {
   if (error) return <p className="text-sm text-red-500">{error}</p>;
 
   if (isInitialLoading) {
-    return (
-      <div className="flex flex-col gap-2.5">
-        {Array.from({ length: ITEMS_PER_PAGE }).map((_, idx) => (
-          <ListCardSkeleton key={idx} />
-        ))}
-      </div>
-    );
+    return <ListCardSkeleton count={ITEMS_PER_PAGE} />;
   }
 
   if (!allLogs.length) {

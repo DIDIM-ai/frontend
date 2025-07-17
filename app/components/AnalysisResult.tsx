@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { ListCard } from '@/components/ui/listcard';
-import { Skeleton } from '@/components/ui/skeleton';
+import { ListCardSkeleton } from '@/components/common/ListCardSkeleton';
 
 interface AnalysisResultItem {
   logSolveId: number;
@@ -42,10 +42,7 @@ export function AnalysisResult() {
   return (
     <section>
       <h3 className="text-xl font-bold mb-2.5">최근 분석 결과</h3>
-      {loading &&
-        Array.from({ length: 3 }).map((_, idx) => (
-          <Skeleton key={idx} className="w-full h-[80px] mb-[5px]" />
-        ))}
+    {loading && <ListCardSkeleton count={3} />}
       {error && <p className="text-red-500">{error}</p>}
       <ul className="flex flex-col gap-2.5">
         {results.map((item) => (

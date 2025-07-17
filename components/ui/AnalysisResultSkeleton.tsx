@@ -1,6 +1,6 @@
 import { Skeleton } from "@/components/ui/skeleton";
 
-export function ListCardSkeleton() {
+export function AnalysisResultSkeleton() {
   return (
     <li className="flex items-center gap-2.5 border border-gray-300 rounded-[5px] p-2.5 h-[80px]">
 
