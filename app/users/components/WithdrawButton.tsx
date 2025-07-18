@@ -3,27 +3,46 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { ConfirmModal } from '@/components/common/ConfirmModal';
+import { useUserStore } from '@/lib/store/useUserStore';
 
 export function WithdrawButton() {
   const [open, setOpen] = useState(false);
   const router = useRouter();
+  const clearUser = useUserStore((state) => state.clearUser);
+
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
 
   const handleWithdraw = async () => {
     try {
-      alert('회원 탈퇴 완료');
-      setOpen(false);
+      const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/users/me`, {
+        method: 'DELETE',
+        credentials: 'include',
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+        },
+      });
+
+      if (!res.ok) throw new Error('회원 탈퇴 실패');
+
+      localStorage.removeItem('accessToken');
+      clearUser();
+      alert('회원 탈퇴가 완료되었습니다.');
       router.push('/login');
     } catch (err) {
-      console.error(err);
+      console.error('탈퇴 오류:', err);
+      alert('탈퇴 중 오류가 발생했습니다.');
+    } finally {
+      handleClose();
     }
   };
 
   return (
     <>
-      <button onClick={() => setOpen(true)}>회원탈퇴</button>
+      <button onClick={handleOpen}>회원탈퇴</button>
       <ConfirmModal
         open={open}
-        onClose={() => setOpen(false)}
+        onClose={handleClose}
         onConfirm={handleWithdraw}
         message="회원 탈퇴하시겠습니까?"
         cancelText="취소"
