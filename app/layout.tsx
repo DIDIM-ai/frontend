@@ -40,7 +40,7 @@ export default function RootLayout({
     <html lang="ko" className={`${pretendard.variable} ${suite.variable} ${montserrat.variable}`}>
       <body>       
         <BodyWrapper>{children}</BodyWrapper>
-        <Toaster richColors closeButton={false} duration={3000} position="top-center" />
+        <Toaster richColors closeButton={false} duration={3000} position="bottom-center" toastOptions={{ style: { marginBottom: '80px' } }}/>
       </body>
     </html>
   );
