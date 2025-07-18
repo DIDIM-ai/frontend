@@ -108,7 +108,7 @@ export default function UsersPage() {
       <h2 className="text-lg font-semibold my-4">이전 분석 기록</h2>
       {children.length > 0 && selectedIndex !== null && <AnalysisCard />}
 
-      <div className="flex flex-col items-start gap-4 mt-10 text-sm text-gray-300">
+      <div className="flex flex-col items-start gap-4 mt-10 text-sm text-gray-300 cursor-pointer">
         <button
           onClick={() => {
             localStorage.removeItem('accessToken');

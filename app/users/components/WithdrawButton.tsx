@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { ConfirmModal } from '@/components/common/ConfirmModal';
 import { useUserStore } from '@/lib/store/useUserStore';
+import { toast } from 'sonner';
 
 export function WithdrawButton() {
   const [open, setOpen] = useState(false);
@@ -27,11 +28,11 @@ export function WithdrawButton() {
 
       localStorage.removeItem('accessToken');
       clearUser();
-      alert('회원 탈퇴가 완료되었습니다.');
+      toast.success('회원 탈퇴가 완료되었습니다.');
       router.push('/login');
     } catch (err) {
       console.error('탈퇴 오류:', err);
-      alert('탈퇴 중 오류가 발생했습니다.');
+      toast.error('탈퇴 중 오류가 발생했습니다.');
     } finally {
       handleClose();
     }
