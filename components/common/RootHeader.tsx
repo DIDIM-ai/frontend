@@ -7,7 +7,13 @@ export function RootHeader() {
       <nav className="flex justify-between items-center">
         <li>
           <Link href="/">
-            <Image src="/assets/logo.svg" alt="logo" width={90} height={60} />
+            <Image
+              src="/assets/logo.svg"
+              alt="logo"
+              width={90}
+              height={30}
+              className="min-h-[35px]"
+            />
           </Link>
         </li>
       </nav>

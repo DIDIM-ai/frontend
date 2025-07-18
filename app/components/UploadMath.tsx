@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Camera } from 'lucide-react';
 import { GalleryUpload } from '@/app/components/upload/GalleryUpload';
 import { CameraCapture } from '@/app/components/upload/CameraCapture';
@@ -13,7 +14,7 @@ export function UploadMath() {
   const [stream, setStream] = useState<MediaStream | null>(null);
   const [isUploading, setIsUploading] = useState(false);
 
-  const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+  const router = useRouter();
 
   const startCamera = async () => {
     setShowCamera(true);
@@ -51,21 +52,23 @@ export function UploadMath() {
     formData.append('problemType', 'math');
 
     try {
-      const response = await fetch(`${API_BASE_URL}/api/math/solve`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/math/solve?grade=1`, {
         method: 'POST',
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+        },
         body: formData,
       });
 
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({ message: '알 수 없는 오류' }));
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({ message: '알 수 없는 오류' }));
         throw new Error(
-          `HTTP error! status: ${response.status}, message: ${errorData.message || '업로드 실패'}`,
+          `HTTP error! status: ${res.status}, message: ${errorData.message || '업로드 실패'}`,
         );
       }
 
-      const result = await response.json();
-      console.log('업로드 성공:', result);
-      toast.success('문제가 성공적으로 업로드되었습니다!');
+      const result = await res.json();
+      router.push(`/result/${result.logSolveId}`);
     } catch (error) {
       console.error('업로드 실패:', error);
       toast.error('업로드에 실패했습니다. 새로고침 후 다시 시도해주세요.');

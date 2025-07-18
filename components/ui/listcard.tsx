@@ -17,6 +17,7 @@ export function ListCard({ id, imageSrc, text, date }: ListCardProps) {
         src={imageSrc || '/assets/example.png'}
         width={60}
         height={60}
+        unoptimized={true}
         alt="분석결과 썸네일"
         className="rounded-md"
       />

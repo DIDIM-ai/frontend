@@ -12,18 +12,18 @@ interface Props {
 
 export function BodyWrapper({ children }: Props) {
   const pathname = usePathname();
-  const excludePaths = ['/login', '/result'];
+  const excludePaths = ['/login'];
   const isExcluded = excludePaths.includes(pathname);
   const isResultPage = pathname.startsWith('/result');
 
   return (
     <div className="relative max-w-[var(--space-mobileMax)] min-h-screen px-5 py-4 mx-auto border-x border-zinc-200">
       <RemoveBodyPointerEvents />
-      {!isExcluded && <RootHeader />}
+      {!isExcluded && !isResultPage && <RootHeader />}
       {isResultPage && <ResultHeader />}
       <div className="pb-20">
         {children}
-        {(!isExcluded || isResultPage) && <MenuBar />}
+        {!isExcluded && !isResultPage && <MenuBar />}
       </div>
     </div>
   );

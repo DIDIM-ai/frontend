@@ -39,7 +39,6 @@ export default function UsersPage() {
 
     const fetchUserInfo = async () => {
       try {
-        // 1. 사용자 정보 요청
         const res = await authorizedFetch(
           `${process.env.NEXT_PUBLIC_BACKEND_URL}/test/api/temp/user/me`
         );
@@ -47,7 +46,6 @@ export default function UsersPage() {
         const userData = await res.json();
         setUser(userData);
 
-        // 2. 자녀 목록 요청
         const childrenRes = await authorizedFetch(
           `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user-jrs/parent/${userData.userId}`
         );
@@ -67,6 +65,17 @@ export default function UsersPage() {
     fetchUserInfo();
   }, [router, setUser, clearUser]);
 
+  const handleChildDeleted = (deletedId: number) => {
+    const updatedChildren = children.filter((c) => c.id !== deletedId);
+    setChildren(updatedChildren);
+
+    if (children[selectedIndex]?.id === deletedId) {
+      setSelectedIndex(0);
+    } else if (selectedIndex >= updatedChildren.length) {
+      setSelectedIndex(updatedChildren.length - 1);
+    }
+  };
+
   if (isLoading) return <div className="text-center mt-20">로딩 중...</div>;
 
   return (
@@ -80,7 +89,7 @@ export default function UsersPage() {
           <div className="grid grid-cols-2 gap-6">
             {children.map((child, index) => (
               <ChildCard
-                key={`child-${child.id}`} 
+                key={`child-${child.id}`}
                 id={`${child.id}`}
                 name={child.name}
                 grade={String(child.schoolGrade)}
@@ -88,6 +97,7 @@ export default function UsersPage() {
                 parentId={child.parentId}
                 selected={selectedIndex === index}
                 onClick={() => setSelectedIndex(index)}
+                onDeleted={() => handleChildDeleted(child.id)}
               />
             ))}
             <AddChildCard />
@@ -96,7 +106,7 @@ export default function UsersPage() {
       )}
 
       <h2 className="text-lg font-semibold my-4">이전 분석 기록</h2>
-      {selectedIndex !== null && <AnalysisCard />}
+      {children.length > 0 && selectedIndex !== null && <AnalysisCard />}
 
       <div className="flex flex-col items-start gap-4 mt-10 text-sm text-gray-300">
         <button
