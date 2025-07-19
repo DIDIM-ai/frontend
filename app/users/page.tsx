@@ -18,7 +18,7 @@ interface Child {
   name: string;
   schoolGrade: number;
   parentId: number;
-  profileImageId: number | null;
+  profileImageUrl?: string | null;
 }
 
 export default function UsersPage() {
@@ -49,7 +49,7 @@ export default function UsersPage() {
         setUser(userData);
 
         const childrenRes = await authorizedFetch(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user-jrs/parent/${userData.userId}`
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user-jrs/parent`
         );
         if (!childrenRes.ok) throw new Error('자녀 정보 조회 실패');
 
@@ -108,8 +108,7 @@ export default function UsersPage() {
                 id={`${child.id}`}
                 name={child.name}
                 grade={String(child.schoolGrade)}
-                profileImageId={child.profileImageId}
-                parentId={child.parentId}
+                profileImageUrl={child.profileImageUrl}
                 selected={selectedIndex === index}
                 onClick={() => {
                   setSelectedIndex(index);
@@ -126,7 +125,7 @@ export default function UsersPage() {
       <h2 className="text-lg font-semibold my-4">이전 분석 기록</h2>
       {children.length > 0 && selectedIndex !== null && <AnalysisCard />}
 
-      <div className="flex flex-col items-start gap-4 mt-10 text-sm text-gray-300">
+      <div className="flex flex-col items-start gap-4 mt-10 text-sm text-gray-300 cursor-pointer">
         <button
           onClick={() => {
             localStorage.removeItem('accessToken');
