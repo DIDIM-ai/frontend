@@ -11,6 +11,7 @@ import {
   SelectContent,
   SelectItem,
 } from '@/components/ui/select';
+import { toast } from 'sonner';
 
 interface ChildFormProps {
   mode?: 'register' | 'edit';
@@ -74,24 +75,32 @@ export function ChildForm({
       let userJrId: number;
 
       if (mode === 'register') {
+        const formData = new FormData();
+
+        const metadata = {
+          nickname: name,
+          schoolGrade: grade,
+        };
+        formData.append('metadata', JSON.stringify(metadata));
+        if (selectedFile) {
+          formData.append('file', selectedFile);
+        }
+
         const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user-jrs`, {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json',
             Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
           },
-          body: JSON.stringify({
-            parentId,
-            name,
-            schoolGrade: grade,
-          }),
+          body: formData,
         });
 
         if (!res.ok) throw new Error('자녀 등록 실패');
         const jrData = await res.json();
+        console.log('등록된 자녀 데이터:', jrData);
         userJrId = jrData.id;
-      } 
-      else if (mode === 'edit' && userInput?.id) {
+
+        toast.success(`${name} 프로필이 등록되었습니다.`);
+      } else if (mode === 'edit' && userInput?.id) {
         const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user-jrs/${userInput.id}`, {
           method: 'PATCH',
           headers: {
@@ -106,38 +115,41 @@ export function ChildForm({
 
         if (!res.ok) throw new Error('자녀 수정 실패');
         userJrId = userInput.id;
+
+        // 이미지가 변경된 경우에만 업로드
+        if (selectedFile) {
+          const formData = new FormData();
+          formData.append('file', selectedFile);
+
+          const imgRes = await fetch(
+            `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/images/upload?userId=${parentId}`,
+            {
+              method: 'POST',
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+              },
+              body: formData,
+            }
+          );
+
+          if (!imgRes.ok) throw new Error('이미지 업로드 실패');
+          const imgData = await imgRes.json();
+          const imageId = imgData.imageId;
+
+          await fetch(
+            `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user-jrs/${userJrId}/profile-image?imageId=${imageId}`,
+            {
+              method: 'PATCH',
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+              },
+            }
+          );
+        }
+
+        toast.success(`${name} 프로필이 수정되었습니다.`);
       } else {
         throw new Error('잘못된 요청');
-      }
-
-      if (selectedFile) {
-        const formData = new FormData();
-        formData.append('file', selectedFile);
-
-        const imgRes = await fetch(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/images/upload?userId=${parentId}`,
-          {
-            method: 'POST',
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
-            },
-            body: formData,
-          }
-        );
-
-        if (!imgRes.ok) throw new Error('이미지 업로드 실패');
-        const imgData = await imgRes.json();
-        const imageId = imgData.imageId;
-
-        await fetch(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user-jrs/${userJrId}/profile-image?imageId=${imageId}`,
-          {
-            method: 'PATCH',
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
-            },
-          }
-        );
       }
 
       onSubmit();
@@ -187,6 +199,7 @@ export function ChildForm({
           value={name}
           onChange={(e) => setName(e.target.value)}
           placeholder="이름을 입력하세요"
+          className="focus-visible:ring-primary"
         />
         {nameError && <p className="text-sm text-red-500 mt-1">{nameError}</p>}
       </div>
