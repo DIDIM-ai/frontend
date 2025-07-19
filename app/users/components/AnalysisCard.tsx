@@ -4,7 +4,8 @@ import { useEffect, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { ListCard } from '@/components/ui/listcard';
 import { ListCardSkeleton } from '@/components/common/ListCardSkeleton';
-import { authorizedFetch } from '@/lib/authorizedFetch'; 
+import { authorizedFetch } from '@/lib/authorizedFetch';
+import { useSelectedChildStore } from '@/lib/store/useSelectedChildStore';
 
 interface AnalysisResultItem {
   logSolveId: number;
@@ -16,6 +17,8 @@ interface AnalysisResultItem {
 const ITEMS_PER_PAGE = 5;
 
 export function AnalysisCard() {
+  const selectedChild = useSelectedChildStore((state) => state.selectedChild);
+
   const [allLogs, setAllLogs] = useState<AnalysisResultItem[]>([]);
   const [visibleLogs, setVisibleLogs] = useState<AnalysisResultItem[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -25,6 +28,12 @@ export function AnalysisCard() {
 
   const fetchLogs = async () => {
     try {
+      if (!selectedChild) {
+        setError('자녀를 먼저 선택해주세요.');
+        setIsInitialLoading(false);
+        return;
+      }
+
       const token = localStorage.getItem('accessToken');
       if (!token) {
         setError('로그인이 필요합니다.');
@@ -32,12 +41,16 @@ export function AnalysisCard() {
         return;
       }
 
-      const res = await authorizedFetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/math/all-logs`);
+      const res = await authorizedFetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/math/logs?userJrId=${selectedChild.id}`,
+      );
       if (!res.ok) throw new Error(`요청 실패: ${res.status}`);
 
       const data = await res.json();
-      setAllLogs(data.logs);
-      setVisibleLogs(data.logs?.slice(0, ITEMS_PER_PAGE));
+      const logs: AnalysisResultItem[] = data.logs;
+
+      setAllLogs(logs);
+      setVisibleLogs(logs.slice(0, ITEMS_PER_PAGE));
     } catch (err) {
       setError(err instanceof Error ? err.message : '데이터를 불러오지 못했습니다.');
     } finally {
@@ -47,7 +60,7 @@ export function AnalysisCard() {
 
   useEffect(() => {
     fetchLogs();
-  }, []);
+  }, [selectedChild]); 
 
   useEffect(() => {
     if (inView && !loading && visibleLogs.length < allLogs.length) {

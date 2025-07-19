@@ -4,7 +4,7 @@ import { persist } from 'zustand/middleware';
 type SelectedChild = {
   id: number;
   name: string;
-  grade: number;
+  schoolGrade: number;
   profileImageId: number | null;
   parentId: number;
 };
