@@ -12,6 +12,7 @@ import {
   SelectItem,
 } from '@/components/ui/select';
 import { toast } from 'sonner';
+import { authorizedFetch } from '@/lib/authorizedFetch';
 
 interface ChildFormProps {
   mode?: 'register' | 'edit';
@@ -86,11 +87,8 @@ export function ChildForm({
           formData.append('file', selectedFile);
         }
 
-        const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user-jrs`, {
+        const res = await authorizedFetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user-jrs`, {
           method: 'POST',
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
-          },
           body: formData,
         });
 
