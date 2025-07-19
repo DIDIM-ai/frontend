@@ -12,7 +12,7 @@ export default function SuccessPage() {
 
     if (token) {
       localStorage.setItem('accessToken', token);
-      router.replace('/');
+      router.replace('/users');
     }
   }, [router]);
 
