@@ -98,23 +98,26 @@ export function ChildForm({
 
         toast.success(`${name} 프로필이 등록되었습니다.`);
       } else if (mode === 'edit' && userInput?.id) {
-        const res = await authorizedFetch(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user-jrs/${userInput.id}`,
-          {
-            method: 'PATCH',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              name,
-              schoolGrade: grade,
-            }),
-          }
-        );
+          const formData = new FormData();
+          const metadata = {
+            nickname: name,
+            schoolGrade: grade,
+          };
+          const metadataBlob = new Blob([JSON.stringify(metadata)], {
+            type: 'application/json',
+          });
 
-        if (!res.ok) throw new Error('자녀 수정 실패');
+          formData.append('metadata', metadataBlob);
 
-        toast.success(`${name} 프로필이 수정되었습니다.`);
+          const res = await authorizedFetch(
+            `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user-jrs/${userInput.id}`,
+            {
+              method: 'PATCH',
+              body: formData,
+            }
+          );
+          if (!res.ok) throw new Error('자녀 수정 실패');
+          toast.success(`${name} 프로필이 수정되었습니다.`);
       } else {
         throw new Error('잘못된 요청');
       }
