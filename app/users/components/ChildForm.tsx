@@ -11,6 +11,8 @@ import {
   SelectContent,
   SelectItem,
 } from '@/components/ui/select';
+import { toast } from 'sonner';
+import { authorizedFetch } from '@/lib/authorizedFetch';
 
 interface ChildFormProps {
   mode?: 'register' | 'edit';
@@ -36,7 +38,6 @@ const gradeOptions = [
 
 export function ChildForm({
   mode = 'register',
-  parentId,
   userInput,
   onSubmit,
   onCancel,
@@ -71,73 +72,54 @@ export function ChildForm({
     setUploading(true);
 
     try {
-      let userJrId: number;
-
       if (mode === 'register') {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user-jrs`, {
+        const formData = new FormData();
+
+        const metadata = {
+          nickname: name,
+          schoolGrade: grade,
+        };
+
+        const metadataBlob = new Blob([JSON.stringify(metadata)], {
+          type: 'application/json',
+        });
+
+        formData.append('metadata', metadataBlob);
+        if (selectedFile) {
+          formData.append('image', selectedFile);
+        }
+
+        const res = await authorizedFetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user-jrs`, {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
-          },
-          body: JSON.stringify({
-            parentId,
-            name,
-            schoolGrade: grade,
-          }),
+          body: formData,
         });
 
         if (!res.ok) throw new Error('자녀 등록 실패');
-        const jrData = await res.json();
-        userJrId = jrData.id;
-      } 
-      else if (mode === 'edit' && userInput?.id) {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user-jrs/${userInput.id}`, {
-          method: 'PATCH',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
-          },
-          body: JSON.stringify({
-            name,
-            schoolGrade: grade,
-          }),
-        });
 
-        if (!res.ok) throw new Error('자녀 수정 실패');
-        userJrId = userInput.id;
+        toast.success(`${name} 프로필이 등록되었습니다.`);
+      } else if (mode === 'edit' && userInput?.id) {
+          const formData = new FormData();
+          const metadata = {
+            nickname: name,
+            schoolGrade: grade,
+          };
+          const metadataBlob = new Blob([JSON.stringify(metadata)], {
+            type: 'application/json',
+          });
+
+          formData.append('metadata', metadataBlob);
+
+          const res = await authorizedFetch(
+            `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user-jrs/${userInput.id}`,
+            {
+              method: 'PATCH',
+              body: formData,
+            }
+          );
+          if (!res.ok) throw new Error('자녀 수정 실패');
+          toast.success(`${name} 프로필이 수정되었습니다.`);
       } else {
         throw new Error('잘못된 요청');
-      }
-
-      if (selectedFile) {
-        const formData = new FormData();
-        formData.append('file', selectedFile);
-
-        const imgRes = await fetch(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/images/upload?userId=${parentId}`,
-          {
-            method: 'POST',
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
-            },
-            body: formData,
-          }
-        );
-
-        if (!imgRes.ok) throw new Error('이미지 업로드 실패');
-        const imgData = await imgRes.json();
-        const imageId = imgData.imageId;
-
-        await fetch(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user-jrs/${userJrId}/profile-image?imageId=${imageId}`,
-          {
-            method: 'PATCH',
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
-            },
-          }
-        );
       }
 
       onSubmit();
@@ -154,31 +136,36 @@ export function ChildForm({
       onSubmit={handleSubmit}
       className="flex flex-col items-center gap-8 w-full max-w-xs mx-auto"
     >
-      {/* 프로필 사진 */}
-      <div className="relative self-start">
-        <div className="cursor-pointer" onClick={() => fileInputRef.current?.click()}>
-          <Image
-            src={profileUrl}
-            alt="프로필"
-            width={60}
-            height={60}
-            className="rounded-full border border-primary object-cover w-[60px] h-[60px]"
+      {/* 프로필 사진 (register 모드일 때만 표시) */}
+      {mode === 'register' && (
+        <div className="relative self-start">
+          <div
+            className="cursor-pointer"
+            onClick={() => fileInputRef.current?.click()}
+          >
+            <Image
+              src={profileUrl}
+              alt="프로필"
+              width={60}
+              height={60}
+              className="rounded-full border border-primary object-cover w-[60px] h-[60px]"
+            />
+          </div>
+          <button
+            type="button"
+            className="absolute -bottom-0 -right-0 bg-primary w-5 h-5 rounded-full flex items-center justify-center text-white text-xs pointer-events-none"
+          >
+            +
+          </button>
+          <input
+            type="file"
+            accept="image/*"
+            ref={fileInputRef}
+            className="hidden"
+            onChange={handleFileChange}
           />
         </div>
-        <button
-          type="button"
-          className="absolute -bottom-0 -right-0 bg-primary w-5 h-5 rounded-full flex items-center justify-center text-white text-xs pointer-events-none"
-        >
-          +
-        </button>
-        <input
-          type="file"
-          accept="image/*"
-          ref={fileInputRef}
-          className="hidden"
-          onChange={handleFileChange}
-        />
-      </div>
+      )}
 
       {/* 이름 입력 */}
       <div className="w-full">
@@ -187,6 +174,7 @@ export function ChildForm({
           value={name}
           onChange={(e) => setName(e.target.value)}
           placeholder="이름을 입력하세요"
+          className="focus-visible:ring-primary"
         />
         {nameError && <p className="text-sm text-red-500 mt-1">{nameError}</p>}
       </div>

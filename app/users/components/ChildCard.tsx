@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import {
@@ -19,8 +19,7 @@ type ChildCardProps = {
   id: string;
   name: string;
   grade: string;
-  profileImageId?: number | null;
-  parentId: number;
+  profileImageUrl?: string | null;
   selected?: boolean;
   onClick: () => void;
   onDeleted?: (id: string) => void;
@@ -30,14 +29,12 @@ export function ChildCard({
   id,
   name,
   grade,
-  profileImageId,
-  parentId,
+  profileImageUrl,
   selected = false,
   onClick,
   onDeleted,
 }: ChildCardProps) {
   const [showModal, setShowModal] = useState(false);
-  const [imageUrl, setImageUrl] = useState('/assets/profile.png');
   const router = useRouter();
 
   const handleOpenModal = () => setShowModal(true);
@@ -68,33 +65,6 @@ export function ChildCard({
     router.push(`/users/edit/${id}`);
   };
 
-  useEffect(() => {
-    const fetchImageUrl = async () => {
-      if (!profileImageId) return;
-
-      try {
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/images/${profileImageId}?userId=${parentId}`,
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
-            },
-          }
-        );
-
-        if (!res.ok) throw new Error('이미지 URL 조회 실패');
-        const data = await res.json();
-        if (data.url) {
-          setImageUrl(data.url);
-        }
-      } catch (err) {
-        console.error('프로필 이미지 불러오기 실패:', err);
-      }
-    };
-
-    fetchImageUrl();
-  }, [profileImageId, parentId]);
-
   return (
     <>
       <section
@@ -105,7 +75,7 @@ export function ChildCard({
       >
         <div className="relative w-[60px] h-[60px] rounded-full overflow-hidden border border-primary mb-1">
           <Image
-            src={imageUrl}
+            src={profileImageUrl || '/assets/profile.png'}
             alt="자녀 프로필"
             fill
             className="object-cover"
