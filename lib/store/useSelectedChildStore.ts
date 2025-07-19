@@ -5,8 +5,8 @@ type SelectedChild = {
   id: number;
   name: string;
   schoolGrade: number;
-  profileImageId: number | null;
   parentId: number;
+  profileImageUrl?: string | null;
 };
 
 interface SelectedChildState {
