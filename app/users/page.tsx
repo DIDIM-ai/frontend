@@ -94,20 +94,20 @@ export default function UsersPage() {
 
   return (
     <div>
-      <h2 className="text-lg font-semibold mb-2">자녀 관리</h2>
+      <h2 className="text-lg font-semibold mb-6">자녀 관리</h2>
 
       {isLoading ? (
-  <div className="flex justify-center mb-4">
-    <div className="grid grid-cols-2 gap-6">
-      {Array.from({ length: 3 }).map((_, idx) => (
-        <ChildCardSkeleton key={idx} />
-      ))}
-    </div>
-  </div>
-) : children.length === 0 ? (
+        <div className="flex justify-center mb-4">
+          <div className="grid grid-cols-2 gap-6">
+            {Array.from({ length: 3 }).map((_, idx) => (
+              <ChildCardSkeleton key={idx} />
+            ))}
+          </div>
+        </div>
+      ) : children.length === 0 ? (
         <EmptyChildCard onRegisterClick={() => router.push('/users/register-child')} />
       ) : (
-        <div className="flex justify-center mb-4">
+        <div className="flex justify-center mb-6">
           <div className="grid grid-cols-2 gap-6">
             {children.map((child, index) => (
               <ChildCard
@@ -129,7 +129,7 @@ export default function UsersPage() {
         </div>
       )}
 
-      <h2 className="text-lg font-semibold my-4">이전 분석 기록</h2>
+      <h2 className="text-lg font-semibold mb-6">이전 분석 기록</h2>
       {children.length > 0 && selectedIndex !== null && <AnalysisCard />}
 
       <div className="flex flex-col items-start gap-4 mt-10 text-sm text-gray-300 cursor-pointer">
