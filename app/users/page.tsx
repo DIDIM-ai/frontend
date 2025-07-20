@@ -3,15 +3,17 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
+import { useUserStore } from '@/lib/store/useUserStore';
+import { useSelectedChildStore } from '@/lib/store/useSelectedChildStore';
+import { authorizedFetch } from '@/lib/authorizedFetch';
+
 import { ChildCard } from './components/ChildCard';
 import { AddChildCard } from './components/AddChildCard';
 import { EmptyChildCard } from './components/EmptyChild';
 import { AnalysisCard } from './components/AnalysisCard';
 import { WithdrawButton } from './components/WithdrawButton';
+import { ChildCardSkeleton } from './components/ui/ChildCardSkeleton';
 
-import { useUserStore } from '@/lib/store/useUserStore';
-import { useSelectedChildStore } from '@/lib/store/useSelectedChildStore';
-import { authorizedFetch } from '@/lib/authorizedFetch';
 
 interface Child {
   id: number;
@@ -72,7 +74,6 @@ export default function UsersPage() {
       setSelectedChild(children[0]);
     }
   }, [children, setSelectedChild]);
-  
 
   const handleChildDeleted = (deletedId: number) => {
     const updatedChildren = children.filter((c) => c.id !== deletedId);
@@ -91,13 +92,19 @@ export default function UsersPage() {
     }
   };
 
-  if (isLoading) return <div className="text-center mt-20">로딩 중...</div>;
-
   return (
     <div>
       <h2 className="text-lg font-semibold mb-2">자녀 관리</h2>
 
-      {children.length === 0 ? (
+      {isLoading ? (
+  <div className="flex justify-center mb-4">
+    <div className="grid grid-cols-2 gap-6">
+      {Array.from({ length: 3 }).map((_, idx) => (
+        <ChildCardSkeleton key={idx} />
+      ))}
+    </div>
+  </div>
+) : children.length === 0 ? (
         <EmptyChildCard onRegisterClick={() => router.push('/users/register-child')} />
       ) : (
         <div className="flex justify-center mb-4">
