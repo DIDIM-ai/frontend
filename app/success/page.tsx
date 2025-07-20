@@ -12,7 +12,8 @@ export default function SuccessPage() {
 
     if (token) {
       localStorage.setItem('accessToken', token);
-      router.replace('/users');
+      console.log('Access Token:', token);
+      router.replace('/');
     }
   }, [router]);
 

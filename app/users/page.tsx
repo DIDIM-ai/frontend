@@ -10,6 +10,7 @@ import { AnalysisCard } from './components/AnalysisCard';
 import { WithdrawButton } from './components/WithdrawButton';
 
 import { useUserStore } from '@/lib/store/useUserStore';
+import { useSelectedChildStore } from '@/lib/store/useSelectedChildStore';
 import { authorizedFetch } from '@/lib/authorizedFetch';
 
 interface Child {
@@ -17,7 +18,7 @@ interface Child {
   name: string;
   schoolGrade: number;
   parentId: number;
-  profileImageId: number | null;
+  profileImageUrl?: string | null;
 }
 
 export default function UsersPage() {
@@ -28,6 +29,7 @@ export default function UsersPage() {
 
   const setUser = useUserStore((state) => state.setUser);
   const clearUser = useUserStore((state) => state.clearUser);
+  const setSelectedChild = useSelectedChildStore((state) => state.setSelectedChild);
 
   useEffect(() => {
     const token = localStorage.getItem('accessToken');
@@ -47,7 +49,7 @@ export default function UsersPage() {
         setUser(userData);
 
         const childrenRes = await authorizedFetch(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user-jrs/parent/${userData.userId}`
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user-jrs/parent`
         );
         if (!childrenRes.ok) throw new Error('자녀 정보 조회 실패');
 
@@ -65,14 +67,27 @@ export default function UsersPage() {
     fetchUserInfo();
   }, [router, setUser, clearUser]);
 
+  useEffect(() => {
+    if (children.length > 0) {
+      setSelectedChild(children[0]);
+    }
+  }, [children, setSelectedChild]);
+  
+
   const handleChildDeleted = (deletedId: number) => {
     const updatedChildren = children.filter((c) => c.id !== deletedId);
     setChildren(updatedChildren);
 
     if (children[selectedIndex]?.id === deletedId) {
-      setSelectedIndex(0);
+      const newIndex = 0;
+      setSelectedIndex(newIndex);
+      if (updatedChildren.length > 0) {
+        setSelectedChild(updatedChildren[newIndex]);
+      }
     } else if (selectedIndex >= updatedChildren.length) {
-      setSelectedIndex(updatedChildren.length - 1);
+      const newIndex = updatedChildren.length - 1;
+      setSelectedIndex(newIndex);
+      setSelectedChild(updatedChildren[newIndex]);
     }
   };
 
@@ -93,10 +108,12 @@ export default function UsersPage() {
                 id={`${child.id}`}
                 name={child.name}
                 grade={String(child.schoolGrade)}
-                profileImageId={child.profileImageId}
-                parentId={child.parentId}
+                profileImageUrl={child.profileImageUrl}
                 selected={selectedIndex === index}
-                onClick={() => setSelectedIndex(index)}
+                onClick={() => {
+                  setSelectedIndex(index);
+                  setSelectedChild(child);
+                }}
                 onDeleted={() => handleChildDeleted(child.id)}
               />
             ))}
