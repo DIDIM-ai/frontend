@@ -124,8 +124,8 @@ export function ChildForm({
 
       onSubmit();
     } catch (err) {
-      alert(`${mode === 'edit' ? '수정' : '등록'} 중 오류 발생`);
       console.error(err);
+      toast.error('처리 중 오류가 발생했습니다.');
     } finally {
       setUploading(false);
     }

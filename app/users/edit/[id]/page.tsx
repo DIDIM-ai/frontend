@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { ChildForm } from '@/app/users/components/ChildForm';
+import { toast } from 'sonner';
 
 type UserInputType = {
   id: number;
@@ -44,6 +45,7 @@ export default function EditChildPage() {
         });
       } catch (err) {
         console.error('자녀 정보 불러오기 실패:', err);
+        toast.error('자녀 정보를 불러오지 못했습니다.');
         handleBackToUsers(); 
       }
     };

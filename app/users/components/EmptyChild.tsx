@@ -8,14 +8,14 @@ interface EmptyChildCardProps {
 
 export function EmptyChildCard({ onRegisterClick }: EmptyChildCardProps) {
   return (
-    <div className="flex flex-col items-center justify-center gap-6">
+    <div className="flex flex-col items-center justify-center gap-8">
       <p className="text-center text-black">등록된 자녀가 없습니다</p>
 
       <button
         onClick={onRegisterClick}
         className="w-[284px] h-[60px] flex items-center justify-center gap-4 
                    border-3 border-dotted border-secondary bg-white 
-                   rounded-[5px] text-gray-500 cursor-pointer"
+                   rounded-[5px] text-gray-500 cursor-pointer mb-6"
       >
         <Image
           src="/assets/plus.svg"

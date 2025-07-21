@@ -17,10 +17,5 @@ export default function SuccessPage() {
     }
   }, [router]);
 
-  return (
-    <div className="flex flex-col items-center justify-center h-screen">
-      <h1 className="text-2xl font-bold">로그인 처리 중...</h1>
-      <p className="text-gray-500 mt-2">잠시만 기다려 주세요</p>
-    </div>
-  );
+  return null; 
 }
