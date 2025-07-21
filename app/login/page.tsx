@@ -48,7 +48,7 @@ export default function LoginPage() {
   <button
     className="w-[300px] h-[50px] flex items-center justify-center gap-2 bg-[#FEE500] rounded-md shadow text-black font-semibold cursor-pointer"
     onClick={() => {
-      window.location.href = `${process.env.NEXT_PUBLIC_BACKEND_URL}/oauth2/authorization/kakao`;
+     window.location.href = `${process.env.NEXT_PUBLIC_BACKEND_URL}/oauth2/authorization/kakao?redirect_uri=${process.env.NEXT_PUBLIC_REDIRECT_URI}`;
     }}
   >
     <svg
