@@ -21,9 +21,16 @@ export function AnalysisResult() {
     const fetchResults = async () => {
       setLoading(true);
       setError(null);
+
+      let storedData;
+      if (typeof window !== 'undefined') {
+        const selectedChildId = localStorage.getItem('selected-child');
+        storedData = selectedChildId ? JSON.parse(selectedChildId).state.selectedChild.id : null;
+      }
+
       try {
         const res = await fetch(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/math/all-logs?page=0&size=3`,
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/math/logs?page=0&size=3&userJrId=${storedData}`,
           {
             method: 'GET',
             headers: {
