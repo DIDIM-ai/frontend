@@ -8,7 +8,7 @@ interface EmptyChildCardProps {
 
 export function EmptyChildCard({ onRegisterClick }: EmptyChildCardProps) {
   return (
-    <div className="flex flex-col items-center justify-center gap-6">
+    <div className="flex flex-col items-center justify-center gap-8">
       <p className="text-center text-black">등록된 자녀가 없습니다</p>
 
       <button
