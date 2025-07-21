@@ -42,23 +42,30 @@ export function UploadMath() {
   };
 
   const handleFileUpload = async (file: File | Blob) => {
-    console.log('업로드할 파일/Blob 객체:', file);
+    let storedData;
+    if (typeof window !== 'undefined') {
+      const selectedChildId = localStorage.getItem('selected-child');
+      storedData = selectedChildId ? JSON.parse(selectedChildId).state.selectedChild.id : null;
+    }
+
     setIsUploading(true);
 
     const formData = new FormData();
     formData.append('mathProblemImage', file, (file as File).name || 'captured_image.jpeg');
-
     formData.append('userId', 'user_id_example');
     formData.append('problemType', 'math');
 
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/math/solve?grade=1`, {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/math/solve?userJrId=${storedData}`,
+        {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+          },
+          body: formData,
         },
-        body: formData,
-      });
+      );
 
       if (!res.ok) {
         const errorData = await res.json().catch(() => ({ message: '알 수 없는 오류' }));
