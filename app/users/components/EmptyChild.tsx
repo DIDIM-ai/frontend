@@ -15,7 +15,7 @@ export function EmptyChildCard({ onRegisterClick }: EmptyChildCardProps) {
         onClick={onRegisterClick}
         className="w-[284px] h-[60px] flex items-center justify-center gap-4 
                    border-3 border-dotted border-secondary bg-white 
-                   rounded-[5px] text-gray-500 cursor-pointer"
+                   rounded-[5px] text-gray-500 cursor-pointer mb-6"
       >
         <Image
           src="/assets/plus.svg"
