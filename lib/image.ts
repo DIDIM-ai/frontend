@@ -1,5 +1,10 @@
 export const resizeImage = (file: File, maxSize = 300): Promise<File> => {
   return new Promise((resolve) => {
+    if (file.type === 'image/svg+xml') {
+      resolve(file);
+      return;
+    }
+
     const img = new Image();
     const reader = new FileReader();
 
@@ -15,19 +20,29 @@ export const resizeImage = (file: File, maxSize = 300): Promise<File> => {
 
       canvas.width = width;
       canvas.height = height;
+
       const ctx = canvas.getContext('2d');
-      ctx?.drawImage(img, 0, 0, width, height);
+      if (!ctx) {
+        resolve(file); 
+        return;
+      }
+
+      ctx.drawImage(img, 0, 0, width, height);
 
       canvas.toBlob((blob) => {
-        if (!blob) return;
-        const resizedFile = new File([blob], file.name, { type: 'image/jpeg' });
+        if (!blob) {
+          resolve(file); 
+          return;
+        }
+
+        const resizedFile = new File([blob], file.name, {
+          type: 'image/jpeg',
+        });
+
         resolve(resizedFile);
       }, 'image/jpeg', 0.8);
-
     };
 
     reader.readAsDataURL(file);
-    
   });
 };
-
