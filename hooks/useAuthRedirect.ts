@@ -9,8 +9,6 @@ export default function useAuthRedirect() {
   useEffect(() => {
     const token = localStorage.getItem('accessToken');
 
-    console.log(token);
-
     if (!token) {
       setIsLoading(true);
       setShowLoginPrompt(true);
