@@ -41,7 +41,7 @@ export default function LoginPage() {
 
   return (
     <div className="flex flex-col min-h-screen items-center justify-center">
-      <p className="text-base mb-10">지금까지 분석된 문제 수</p>
+      <p className="mb-10 text-lg">지금까지 분석된 문제 수</p>
 
       <h1 className="text-6xl font-black text-primary drop-shadow-[0_8px_4px_rgba(255,119,16,0.6)] mb-20">
         {problemCount !== null ? (
