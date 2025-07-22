@@ -14,7 +14,6 @@ import { AnalysisCard } from './components/AnalysisCard';
 import { WithdrawButton } from './components/WithdrawButton';
 import { ChildCardSkeleton } from './components/ui/ChildCardSkeleton';
 
-
 interface Child {
   id: number;
   name: string;
@@ -31,7 +30,7 @@ export default function UsersPage() {
 
   const setUser = useUserStore((state) => state.setUser);
   const clearUser = useUserStore((state) => state.clearUser);
-  const setSelectedChild = useSelectedChildStore((state) => state.setSelectedChild);
+  const { setSelectedChild } = useSelectedChildStore();
 
   useEffect(() => {
     const token = localStorage.getItem('accessToken');
@@ -50,6 +49,7 @@ export default function UsersPage() {
         const userData = await res.json();
         setUser(userData);
 
+
         const childrenRes = await authorizedFetch(
           `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user-jrs/parent`
         );
@@ -57,6 +57,15 @@ export default function UsersPage() {
 
         const childList: Child[] = await childrenRes.json();
         setChildren(childList);
+
+        if (childList.length > 0) {
+          const storedChild = useSelectedChildStore.getState().selectedChild;
+          const matchedChild = childList.find((c) => c.id === storedChild?.id);
+          const initialChild = matchedChild ?? childList[0];
+          setSelectedChild(initialChild);
+          setSelectedIndex(childList.findIndex((c) => c.id === initialChild.id));
+        }
+
         setIsLoading(false);
       } catch (error) {
         console.error('인증 또는 자녀 조회 실패:', error);
@@ -67,13 +76,7 @@ export default function UsersPage() {
     };
 
     fetchUserInfo();
-  }, [router, setUser, clearUser]);
-
-  useEffect(() => {
-    if (children.length > 0) {
-      setSelectedChild(children[0]);
-    }
-  }, [children, setSelectedChild]);
+  }, [router, setUser, clearUser, setSelectedChild]);
 
   const handleChildDeleted = (deletedId: number) => {
     const updatedChildren = children.filter((c) => c.id !== deletedId);
@@ -130,7 +133,7 @@ export default function UsersPage() {
       )}
 
       <h2 className="text-lg font-semibold mb-6">이전 분석 기록</h2>
-      {children.length > 0 && selectedIndex !== null && <AnalysisCard />}
+      <AnalysisCard />
 
       <div className="flex flex-col items-start gap-4 mt-10 text-sm text-gray-300 cursor-pointer">
         <button
