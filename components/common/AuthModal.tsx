@@ -20,15 +20,15 @@ interface AuthDialogProps {
 export function AuthDialog({ isOpen, onLoginClick }: AuthDialogProps) {
   return (
     <Dialog open={isOpen}>
-      <DialogContent className="sm:max-w-[280px] flex flex-col items-center">
+      <DialogContent className="auth-dialog sm:max-w-[280px] flex flex-col items-center">
         <Lottie animationData={Lock} />
         <DialogHeader className="mb-4 items-center">
-          <DialogTitle>로그인이 필요한 서비스입니다</DialogTitle>
+          <DialogTitle>로그인이 필요한 서비스입니다.</DialogTitle>
           <DialogDescription>카카오 계정으로 간편하게 이용해요!</DialogDescription>
         </DialogHeader>
         <DialogFooter className="w-full">
           <Button type="button" onClick={onLoginClick} className="w-full">
-            로그인
+            3초만에 가입하기
           </Button>
         </DialogFooter>
       </DialogContent>
