@@ -9,6 +9,8 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
+import Lottie from 'lottie-react';
+import Lock from '@/public/assets/lottie/lock.json';
 
 interface AuthDialogProps {
   isOpen: boolean;
@@ -19,12 +21,13 @@ export function AuthDialog({ isOpen, onLoginClick }: AuthDialogProps) {
   return (
     <Dialog open={isOpen}>
       <DialogContent className="sm:max-w-[280px] flex flex-col items-center">
-        <DialogHeader className="">
+        <Lottie animationData={Lock} />
+        <DialogHeader className="mb-4 items-center">
           <DialogTitle>로그인이 필요한 서비스입니다</DialogTitle>
           <DialogDescription>카카오 계정으로 간편하게 이용해요!</DialogDescription>
         </DialogHeader>
-        <DialogFooter>
-          <Button type="button" onClick={onLoginClick}>
+        <DialogFooter className="w-full">
+          <Button type="button" onClick={onLoginClick} className="w-full">
             로그인
           </Button>
         </DialogFooter>

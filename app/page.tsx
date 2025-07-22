@@ -3,7 +3,7 @@
 import useAuthRedirect from '@/hooks/useAuthRedirect';
 import { AnalysisResult } from './components/AnalysisResult';
 import { UploadMath } from './components/UploadMath';
-import { AuthDialog } from './users/components/AuthDialog';
+import { AuthDialog } from '../components/common/AuthModal';
 
 export default function UploadPage() {
   const { isLoading, showLoginPrompt, handleLoginClick } = useAuthRedirect();
