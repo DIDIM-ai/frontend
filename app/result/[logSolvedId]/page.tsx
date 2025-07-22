@@ -7,14 +7,10 @@ import { Solve } from '../components/Solve';
 import { TextInput } from '../components/TextInput';
 
 export default function ResultPage() {
-  interface ProblemData {
-    problem: object;
-  }
-
   const params = useParams();
   const logSolvedId = params?.logSolvedId;
 
-  const [problem, setProblem] = useState<ProblemData | null>(null);
+  const [problem, setProblem] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -32,7 +28,7 @@ export default function ResultPage() {
           },
         });
         if (!res.ok) throw new Error('문제 데이터를 불러오지 못했습니다.');
-        const data: ProblemData = await res.json();
+        const data = await res.json();
         setProblem(data);
       } catch (err: unknown) {
         if (err instanceof Error) {
@@ -54,8 +50,12 @@ export default function ResultPage() {
 
   return (
     <>
-      <Problem problem={problem} />
-      <Solve problem={problem} />
+      {problem && (
+        <>
+          <Problem problem={problem} />
+          <Solve problem={problem} />
+        </>
+      )}
       <TextInput />
     </>
   );
