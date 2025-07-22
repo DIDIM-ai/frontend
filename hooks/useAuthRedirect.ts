@@ -8,13 +8,16 @@ export default function useAuthRedirect() {
 
   useEffect(() => {
     const token = localStorage.getItem('accessToken');
-    if (!token) {
-      setIsLoading(false);
-      setShowLoginPrompt(true);
 
-      return;
+    console.log(token);
+
+    if (!token) {
+      setIsLoading(true);
+      setShowLoginPrompt(true);
+    } else {
+      setIsLoading(false);
+      setShowLoginPrompt(false);
     }
-    setIsLoading(true);
   }, [router]);
 
   const handleLoginClick = () => {

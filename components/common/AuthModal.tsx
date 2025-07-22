@@ -12,12 +12,12 @@ import { Button } from '@/components/ui/button';
 import Lottie from 'lottie-react';
 import Lock from '@/public/assets/lottie/lock.json';
 
-interface AuthDialogProps {
+interface AuthModalProps {
   isOpen: boolean;
   onLoginClick: () => void;
 }
 
-export function AuthDialog({ isOpen, onLoginClick }: AuthDialogProps) {
+export function AuthModal({ isOpen, onLoginClick }: AuthModalProps) {
   return (
     <Dialog open={isOpen}>
       <DialogContent className="auth-dialog sm:max-w-[280px] flex flex-col items-center">
