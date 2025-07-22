@@ -13,6 +13,7 @@ import {
 } from '@/components/ui/select';
 import { toast } from 'sonner';
 import { authorizedFetch } from '@/lib/authorizedFetch';
+import { resizeImage } from '@/lib/image';
 
 interface ChildFormProps {
   mode?: 'register' | 'edit';
@@ -50,15 +51,16 @@ export function ChildForm({
   const [nameError, setNameError] = useState('');
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setSelectedFile(file);
-      const tempUrl = URL.createObjectURL(file);
-      setProfileUrl(tempUrl);
-    }
-  };
+const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const file = e.target.files?.[0];
+  if (!file) return;
 
+  const resizedFile = await resizeImage(file, 300);
+  setSelectedFile(resizedFile);
+
+  const tempUrl = URL.createObjectURL(resizedFile);
+  setProfileUrl(tempUrl);
+};
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
