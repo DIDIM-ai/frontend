@@ -47,7 +47,7 @@ export default function LoginPage() {
         {problemCount !== null ? (
           <AnimatedCounter targetNumber={problemCount} />
         ) : (
-          <div className="text-sm text-gray-400">0</div> 
+          <div>0</div> 
         )}
       </h1>
 
