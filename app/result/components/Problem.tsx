@@ -15,7 +15,8 @@ export function Problem({ problem }: ProblemProps) {
       <h3 className="text-xl font-bold mb-5">문제</h3>
       <div className="relative w-full aspect-[280/200] mb-2.5">
         <Image
-          src={`${problem?.image_url}` || '/assets/example.png'}
+          loader={() => problem.image_url ?? '/assets/example.png'}
+          src={`${problem.image_url}` || '/assets/example.png'}
           alt="문제 이미지"
           fill
           className="object-fit border border-zinc-200 rounded-lg p-3"
