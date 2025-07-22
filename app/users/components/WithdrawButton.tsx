@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { ConfirmModal } from '@/components/common/ConfirmModal';
-import { useUserStore } from '@/lib/store/useUserStore';
+import { useUserStore } from '@/stores/useUserStore';
 import { toast } from 'sonner';
 
 export function WithdrawButton() {

@@ -3,8 +3,8 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
-import { useUserStore } from '@/lib/store/useUserStore';
-import { useSelectedChildStore } from '@/lib/store/useSelectedChildStore';
+import { useUserStore } from '@/stores/useUserStore';
+import { useSelectedChildStore } from '@/stores/useSelectedChildStore';
 import { authorizedFetch } from '@/lib/authorizedFetch';
 
 import { ChildCard } from './components/ChildCard';
