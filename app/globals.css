@@ -162,3 +162,8 @@ li {
 .loader-after {
   animation: rotate 2s infinite ease-in-out;
 }
+
+/* 인증 modal */
+.auth-dialog button[data-slot='dialog-close']{
+  display: none !important;
+}

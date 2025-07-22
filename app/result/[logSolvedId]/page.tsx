@@ -1,5 +1,7 @@
 'use client';
 
+import useAuthRedirect from '@/hooks/useAuthRedirect';
+import { AuthModal } from '@/components/common/AuthModal';
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { Problem } from '../components/Problem';
@@ -11,13 +13,24 @@ export default function ResultPage() {
   const logSolvedId = params?.logSolvedId;
 
   const [problem, setProblem] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [dataLoading, setDataLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const { isLoading: authLoading, showLoginPrompt, handleLoginClick } = useAuthRedirect();
+
+  const overallLoading = authLoading || dataLoading;
+
   useEffect(() => {
-    if (!logSolvedId) return;
+    if (authLoading) return;
+
+    if (!logSolvedId) {
+      setDataLoading(false);
+      setError('문제를 찾을 수 없습니다: ID가 누락되었습니다.');
+      return;
+    }
+
     const fetchProblem = async () => {
-      setLoading(true);
+      setDataLoading(true);
       setError(null);
 
       try {
@@ -27,26 +40,45 @@ export default function ResultPage() {
             Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
           },
         });
-        if (!res.ok) throw new Error('문제 데이터를 불러오지 못했습니다.');
+        if (!res.ok) {
+          const errorData = await res.json();
+          throw new Error(errorData.message || '문제 데이터를 불러오지 못했습니다.');
+        }
         const data = await res.json();
         setProblem(data);
       } catch (err: unknown) {
         if (err instanceof Error) {
           setError(err.message);
         } else {
-          setError('알 수 없는 오류');
+          setError('알 수 없는 오류가 발생했습니다.');
         }
       } finally {
-        setLoading(false);
+        setDataLoading(false);
       }
     };
+
     fetchProblem();
-  }, [logSolvedId]);
+  }, [logSolvedId, authLoading]);
 
-  if (loading) return <div>문제 불러오는 중...</div>;
-  if (error) return <div>오류: {error}</div>;
+  if (overallLoading) {
+    return (
+      <>
+        <div className="flex items-center justify-center min-h-[calc(100vh-200px)]">
+          <p>데이터를 불러오는 중입니다...</p>
+        </div>
 
-  console.log(problem);
+        <AuthModal isOpen={showLoginPrompt} onLoginClick={handleLoginClick} />
+      </>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center min-h-[calc(100vh-200px)] text-red-600">
+        <p>오류: {error}</p>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -54,9 +86,9 @@ export default function ResultPage() {
         <>
           <Problem problem={problem} />
           <Solve problem={problem} />
+          <TextInput />
         </>
       )}
-      <TextInput />
     </>
   );
 }
