@@ -14,7 +14,6 @@ import { AnalysisCard } from './components/AnalysisCard';
 import { WithdrawButton } from './components/WithdrawButton';
 import { ChildCardSkeleton } from './components/ui/ChildCardSkeleton';
 
-
 interface Child {
   id: number;
   name: string;
@@ -31,7 +30,7 @@ export default function UsersPage() {
 
   const setUser = useUserStore((state) => state.setUser);
   const clearUser = useUserStore((state) => state.clearUser);
-  const setSelectedChild = useSelectedChildStore((state) => state.setSelectedChild);
+  const { setSelectedChild } = useSelectedChildStore();
 
   useEffect(() => {
     const token = localStorage.getItem('accessToken');
@@ -71,7 +70,16 @@ export default function UsersPage() {
 
   useEffect(() => {
     if (children.length > 0) {
-      setSelectedChild(children[0]);
+      const storedChild = useSelectedChildStore.getState().selectedChild;
+      const matchedChild = children.find((c) => c.id === storedChild?.id);
+
+      if (matchedChild) {
+        setSelectedChild(matchedChild);
+        setSelectedIndex(children.findIndex((c) => c.id === matchedChild.id));
+      } else {
+        setSelectedChild(children[0]);
+        setSelectedIndex(0);
+      }
     }
   }, [children, setSelectedChild]);
 
