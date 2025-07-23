@@ -12,13 +12,16 @@ export function LogoutButton() {
   const handleLogout = async () => {
     try {
       const res = await authorizedFetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/users/logout`, {
-        method: 'POST'
+        method: 'POST',
       });
 
       if (!res.ok) throw new Error('로그아웃 실패');
 
       localStorage.removeItem('accessToken');
+      localStorage.removeItem('selected-child'); 
       clearUser();
+      localStorage.removeItem('user-store');
+
       toast.success('로그아웃 되었습니다.');
       router.push('/login');
     } catch (err) {
@@ -28,7 +31,7 @@ export function LogoutButton() {
   };
 
   return (
-    <button onClick={handleLogout} className='cursor-pointer'>
+    <button onClick={handleLogout} className="cursor-pointer">
       로그아웃
     </button>
   );

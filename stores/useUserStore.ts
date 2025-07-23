@@ -3,7 +3,6 @@ import { persist } from 'zustand/middleware';
 
 interface User {
   userId: number;
-  name: string;
 }
 
 interface UserState {
@@ -21,7 +20,9 @@ export const useUserStore = create<UserState>()(
     }),
     {
       name: 'user-store',
-      partialize: (state) => ({ user: state.user }), 
+      partialize: (state) => ({
+        user: state.user ? { userId: state.user.userId } : null,
+      }),
     }
   )
 );

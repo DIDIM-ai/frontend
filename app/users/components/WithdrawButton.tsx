@@ -24,7 +24,10 @@ export function WithdrawButton() {
       if (!res.ok) throw new Error('회원 탈퇴 실패');
 
       localStorage.removeItem('accessToken');
+      localStorage.removeItem('selected-child'); 
       clearUser();
+      localStorage.removeItem('user-store');
+
       toast.success('회원 탈퇴가 완료되었습니다.');
       router.push('/login');
     } catch (err) {
