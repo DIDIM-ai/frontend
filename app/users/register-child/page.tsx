@@ -3,7 +3,7 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { ChildForm } from '../components/ChildForm';
-import { useUserStore } from '@/lib/store/useUserStore';
+import { useUserStore } from '@/stores/useUserStore';
 
 export default function RegisterChildPage() {
   const router = useRouter();

@@ -6,7 +6,7 @@ import { useInView } from 'react-intersection-observer';
 import { ListCard } from '@/components/ui/listcard';
 import { ListCardSkeleton } from '@/components/common/ListCardSkeleton';
 import { authorizedFetch } from '@/lib/authorizedFetch';
-import { useSelectedChildStore } from '@/lib/store/useSelectedChildStore';
+import { useSelectedChildStore } from '@/stores/useSelectedChildStore';
 
 interface AnalysisResultItem {
   logSolveId: number;

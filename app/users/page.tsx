@@ -3,9 +3,12 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
-import { useUserStore } from '@/lib/store/useUserStore';
-import { useSelectedChildStore } from '@/lib/store/useSelectedChildStore';
+import { useUserStore } from '@/stores/useUserStore';
+import { useSelectedChildStore } from '@/stores/useSelectedChildStore';
 import { authorizedFetch } from '@/lib/authorizedFetch';
+
+import { AuthModal } from '@/components/common/AuthModal';
+import useAuthRedirect from '@/hooks/useAuthRedirect';
 
 import { ChildCard } from './components/ChildCard';
 import { AddChildCard } from './components/AddChildCard';
@@ -32,13 +35,14 @@ export default function UsersPage() {
   const clearUser = useUserStore((state) => state.clearUser);
   const { setSelectedChild } = useSelectedChildStore();
 
+  const {
+    isLoading: authLoading,
+    showLoginPrompt,
+    handleLoginClick,
+  } = useAuthRedirect();
+
   useEffect(() => {
-    const token = localStorage.getItem('accessToken');
-    if (!token) {
-      console.warn('Access token 없음 → 로그인 페이지로 이동');
-      router.replace('/login');
-      return;
-    }
+    if (authLoading) return;
 
     const fetchUserInfo = async () => {
       try {
@@ -46,9 +50,9 @@ export default function UsersPage() {
           `${process.env.NEXT_PUBLIC_BACKEND_URL}/test/api/temp/user/me`
         );
         if (!res.ok) throw new Error(`사용자 정보 응답 실패: ${res.status}`);
+
         const userData = await res.json();
         setUser(userData);
-
 
         const childrenRes = await authorizedFetch(
           `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user-jrs/parent`
@@ -76,7 +80,7 @@ export default function UsersPage() {
     };
 
     fetchUserInfo();
-  }, [router, setUser, clearUser, setSelectedChild]);
+  }, [authLoading, router, setUser, clearUser, setSelectedChild]);
 
   const handleChildDeleted = (deletedId: number) => {
     const updatedChildren = children.filter((c) => c.id !== deletedId);
@@ -94,6 +98,17 @@ export default function UsersPage() {
       setSelectedChild(updatedChildren[newIndex]);
     }
   };
+
+  if (authLoading) {
+    return (
+      <>
+        <div className="flex items-center justify-center min-h-[calc(100vh-200px)]">
+          <p>인증 정보를 확인 중입니다...</p>
+        </div>
+        <AuthModal isOpen={showLoginPrompt} onLoginClick={handleLoginClick} />
+      </>
+    );
+  }
 
   return (
     <div>

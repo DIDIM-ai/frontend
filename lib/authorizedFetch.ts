@@ -4,6 +4,10 @@ export async function authorizedFetch(
 ): Promise<Response> {
   const token = localStorage.getItem('accessToken');
 
+  if (!token) {
+    return new Response(null, { status: 401 });
+  }
+
   const requestWithToken = (token: string) =>
     fetch(input, {
       ...init,
@@ -14,7 +18,7 @@ export async function authorizedFetch(
       credentials: 'include',
     });
 
-  let res = await requestWithToken(token || '');
+  let res = await requestWithToken(token);
 
   if (res.status === 401) {
     console.warn('accessToken 만료 → refresh 시도');
