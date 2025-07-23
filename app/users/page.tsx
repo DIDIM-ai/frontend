@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
-import { useUserStore } from '@/stores/useUserStore';
 import { useSelectedChildStore } from '@/stores/useSelectedChildStore';
 import { authorizedFetch } from '@/lib/authorizedFetch';
 
@@ -32,8 +31,6 @@ export default function UsersPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [children, setChildren] = useState<Child[]>([]);
 
-  const setUser = useUserStore((state) => state.setUser);
-  const clearUser = useUserStore((state) => state.clearUser);
   const { setSelectedChild } = useSelectedChildStore();
 
   const {
@@ -45,22 +42,14 @@ export default function UsersPage() {
   useEffect(() => {
     if (authLoading) return;
 
-    const fetchUserInfo = async () => {
+    const fetchChildren = async () => {
       try {
         const res = await authorizedFetch(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/test/api/temp/user/me`
-        );
-        if (!res.ok) throw new Error(`사용자 정보 응답 실패: ${res.status}`);
-
-        const userData = await res.json();
-        setUser(userData);
-
-        const childrenRes = await authorizedFetch(
           `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user-jrs/parent`
         );
-        if (!childrenRes.ok) throw new Error('자녀 정보 조회 실패');
+        if (!res.ok) throw new Error('자녀 정보 조회 실패');
 
-        const childList: Child[] = await childrenRes.json();
+        const childList: Child[] = await res.json();
         setChildren(childList);
 
         if (childList.length > 0) {
@@ -73,15 +62,14 @@ export default function UsersPage() {
 
         setIsLoading(false);
       } catch (error) {
-        console.error('인증 또는 자녀 조회 실패:', error);
+        console.error('자녀 조회 실패:', error);
         localStorage.removeItem('accessToken');
-        clearUser();
         router.replace('/login');
       }
     };
 
-    fetchUserInfo();
-  }, [authLoading, router, setUser, clearUser, setSelectedChild]);
+    fetchChildren();
+  }, [authLoading, router, setSelectedChild]);
 
   const handleChildDeleted = (deletedId: number) => {
     const updatedChildren = children.filter((c) => c.id !== deletedId);
