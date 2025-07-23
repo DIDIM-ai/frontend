@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { ConfirmModal } from '@/components/common/ConfirmModal';
 import { useUserStore } from '@/stores/useUserStore';
 import { toast } from 'sonner';
+import { authorizedFetch } from '@/lib/authorizedFetch';
 
 export function WithdrawButton() {
   const [open, setOpen] = useState(false);
@@ -16,12 +17,8 @@ export function WithdrawButton() {
 
   const handleWithdraw = async () => {
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/users/me`, {
-        method: 'DELETE',
-        credentials: 'include',
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
-        },
+      const res = await authorizedFetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/users`, {
+        method: 'DELETE'
       });
 
       if (!res.ok) throw new Error('회원 탈퇴 실패');
