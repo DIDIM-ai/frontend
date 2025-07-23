@@ -16,6 +16,7 @@ import { EmptyChildCard } from './components/EmptyChild';
 import { AnalysisCard } from './components/AnalysisCard';
 import { WithdrawButton } from './components/WithdrawButton';
 import { ChildCardSkeleton } from './components/ui/ChildCardSkeleton';
+import { LogoutButton } from './components/LogoutButton';
 
 interface Child {
   id: number;
@@ -150,16 +151,8 @@ export default function UsersPage() {
       <h2 className="text-lg font-semibold mb-6">이전 분석 기록</h2>
       <AnalysisCard />
 
-      <div className="flex flex-col items-start gap-4 mt-10 text-sm text-gray-300 cursor-pointer">
-        <button
-          onClick={() => {
-            localStorage.removeItem('accessToken');
-            clearUser();
-            router.push('/login');
-          }}
-        >
-          로그아웃
-        </button>
+      <div className="flex flex-col items-start gap-4 mt-10 text-sm text-gray-300">
+        <LogoutButton />
         <WithdrawButton />
       </div>
     </div>

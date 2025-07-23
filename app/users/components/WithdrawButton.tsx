@@ -37,7 +37,7 @@ export function WithdrawButton() {
 
   return (
     <>
-      <button onClick={handleOpen}>회원탈퇴</button>
+      <button onClick={handleOpen} className='cursor-pointer'>회원탈퇴</button>
       <ConfirmModal
         open={open}
         onClose={handleClose}
