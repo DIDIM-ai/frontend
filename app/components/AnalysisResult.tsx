@@ -32,9 +32,6 @@ export function AnalysisResult() {
       try {
         const res = await authorizedFetch(
           `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/math/logs?page=0&size=3&userJrId=${storedData}`,
-          {
-            method: 'GET',
-          },
         );
         if (!res.ok) {
           throw new Error('데이터를 불러오지 못했습니다.');
