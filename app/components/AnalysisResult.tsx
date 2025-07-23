@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { ListCard } from '@/components/ui/listcard';
 import { ListCardSkeleton } from '@/components/common/ListCardSkeleton';
 import Link from 'next/link';
+import { authorizedFetch } from '@/lib/authorizedFetch';
 
 interface AnalysisResultItem {
   logSolveId: number;
@@ -29,13 +30,10 @@ export function AnalysisResult() {
       }
 
       try {
-        const res = await fetch(
+        const res = await authorizedFetch(
           `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/math/logs?page=0&size=3&userJrId=${storedData}`,
           {
             method: 'GET',
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
-            },
           },
         );
         if (!res.ok) {

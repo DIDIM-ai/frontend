@@ -2,20 +2,39 @@
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { useUserStore } from '@/stores/useUserStore';
+import { authorizedFetch } from '@/lib/authorizedFetch';
 
 export default function SuccessPage() {
   const router = useRouter();
+  const setUser = useUserStore((state) => state.setUser);
 
   useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const token = urlParams.get('accessToken');
+    const handleSuccessLogin = async () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const token = urlParams.get('accessToken');
+      if (!token) return router.replace('/login');
 
-    if (token) {
       localStorage.setItem('accessToken', token);
-      console.log('Access Token:', token);
-      router.replace('/');
-    }
-  }, [router]);
 
-  return null; 
+      try {
+        const res = await authorizedFetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/test/api/temp/user/me`);
+
+        if (!res.ok) throw new Error('사용자 정보 조회 실패');
+
+        const user = await res.json();
+        setUser(user);
+
+        router.replace('/');
+      } catch (err) {
+        console.error('로그인 후 처리 실패:', err);
+        localStorage.removeItem('accessToken');
+        router.replace('/login');
+      }
+    };
+
+    handleSuccessLogin();
+  }, [router, setUser]);
+
+  return null;
 }
