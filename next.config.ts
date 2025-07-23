@@ -1,19 +1,15 @@
-import type { NextConfig } from "next";
+import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
-  /* config options here */
   images: {
     remotePatterns: [
       {
-        protocol: "https",
-        hostname: "gpt-vision-bucket-test.s3.ap-northeast-2.amazonaws.com",
-        port: "",
-        pathname: "/**",
+        protocol: 'https',
+        hostname: 'gpt-vision-bucket-test.s3.ap-northeast-2.amazonaws.com',
+        pathname: '/**',
       },
-    ]
-    // domains: [
-    //   "gpt-vision-bucket-test.s3.ap-northeast-2.amazonaws.com",
-    // ],
+    ],
+    domains: ['gpt-vision-bucket-test.s3.ap-northeast-2.amazonaws.com'],
   },
 };
 
