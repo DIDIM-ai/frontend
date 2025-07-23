@@ -37,15 +37,17 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko" className={`${pretendard.variable} ${suite.variable} ${montserrat.variable}`}>
-      <body className="relative max-w-[var(--space-mobileMax)] min-h-screen px-5 py-4 mx-auto border-x border-zinc-200">
-        {children}
-        <Toaster
-          richColors
-          closeButton={false}
-          duration={3000}
-          position="bottom-center"
-          toastOptions={{ style: { marginBottom: '80px' } }}
-        />
+      <body>
+        <div className="relative max-w-[var(--space-mobileMax)] min-h-screen px-5 py-4 mx-auto border-x border-zinc-200">
+          {children}
+          <Toaster
+            richColors
+            closeButton={false}
+            duration={3000}
+            position="bottom-center"
+            toastOptions={{ style: { marginBottom: '80px' } }}
+          />
+        </div>
       </body>
     </html>
   );
