@@ -3,6 +3,8 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+import { MoreVertical } from 'lucide-react';
+import { toast } from 'sonner';
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -11,9 +13,8 @@ import {
   DropdownMenuPortal,
   DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu';
-import { MoreVertical } from 'lucide-react';
 import { ConfirmModal } from '@/components/common/ConfirmModal';
-import { toast } from 'sonner';
+import { authorizedFetch } from '@/lib/authorizedFetch';
 
 type ChildCardProps = {
   id: string;
@@ -42,11 +43,8 @@ export function ChildCard({
 
   const handleDelete = async () => {
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user-jrs/${id}`, {
-        method: 'DELETE',
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
-        },
+      const res = await authorizedFetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user-jrs/${id}`, {
+        method: 'DELETE'
       });
 
       if (!res.ok) throw new Error('자녀 삭제 실패');
@@ -75,6 +73,7 @@ export function ChildCard({
       >
         <div className="relative w-[60px] h-[60px] rounded-full overflow-hidden border border-primary mb-1">
           <Image
+            loader={() => profileImageUrl ?? '/assets/profile.png'}
             src={profileImageUrl || '/assets/profile.png'}
             alt="자녀 프로필"
             fill
