@@ -153,8 +153,8 @@ const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
             loader={() => profileUrl ?? '/assets/profile.png'}
             src={profileUrl}
             alt="프로필"
-            width={60}
-            height={60}
+            width={70}
+            height={70}
             className="rounded-full border border-primary object-cover w-[60px] h-[60px]"
           />
         </div>
