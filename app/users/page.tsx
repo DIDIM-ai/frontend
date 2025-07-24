@@ -101,10 +101,10 @@ export default function UsersPage() {
 
   return (
     <div>
-      <h2 className="text-lg font-semibold mb-6">자녀 관리</h2>
+      <h2 className="text-xl font-bold mb-6">자녀 관리</h2>
 
       {isLoading ? (
-        <div className="flex justify-center mb-4">
+        <div className="flex justify-center mb-12">
           <div className="grid grid-cols-2 gap-6">
             {Array.from({ length: 3 }).map((_, idx) => (
               <ChildCardSkeleton key={idx} />
@@ -136,10 +136,10 @@ export default function UsersPage() {
         </div>
       )}
 
-      <h2 className="text-lg font-semibold mb-6">이전 분석 기록</h2>
+      <h2 className="text-xl font-bold mb-6">이전 분석 기록</h2>
       <AnalysisCard />
 
-      <div className="flex flex-col items-start gap-4 mt-10 text-sm text-gray-300">
+      <div className="flex flex-col items-start gap-4 mt-10 text-sm text-gray-500">
         <LogoutButton />
         <WithdrawButton />
       </div>
