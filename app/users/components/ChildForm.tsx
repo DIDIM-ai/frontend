@@ -150,6 +150,7 @@ const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
           onClick={() => fileInputRef.current?.click()}
           >
           <Image
+            loader={() => profileUrl ?? '/assets/profile.png'}
             src={profileUrl}
             alt="프로필"
             width={60}
