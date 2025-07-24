@@ -103,7 +103,7 @@ export function ChildCard({
               align="end"
               side="top"
               sideOffset={8}
-              className="absolute top-6 right-1 z-50 w-[80px] rounded-md cursor-pointer 
+              className="absolute top-8 right-1 z-50 w-[90px] rounded-md cursor-pointer 
               border border-primary bg-secondary shadow-md text-sm text-center p-0 font-semibold"
             >
               <DropdownMenuItem
