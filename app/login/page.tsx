@@ -32,7 +32,7 @@ export default function LoginPage() {
 
   if (isLoggingIn) {
     return (
-      <div className="flex flex-col items-center mt-20">
+      <div className="fixed inset-0 z-50 flex flex-col items-center justify-center">
         <Lottie animationData={loadingAnimation} loop className="w-60 h-60" />
         <p className="mt-6 text-lg">로그인 중입니다...</p>
       </div>
