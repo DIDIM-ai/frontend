@@ -114,7 +114,7 @@ export default function UsersPage() {
       ) : children.length === 0 ? (
         <EmptyChildCard onRegisterClick={() => router.push('/users/register-child')} />
       ) : (
-        <div className="flex justify-center mb-6">
+        <div className="flex justify-center mb-12">
           <div className="grid grid-cols-2 gap-6">
             {children.map((child, index) => (
               <ChildCard
