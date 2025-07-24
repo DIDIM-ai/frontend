@@ -4,13 +4,14 @@ import { useEffect, useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { ChildForm } from '@/app/users/components/ChildForm';
 import { toast } from 'sonner';
+import { authorizedFetch } from '@/lib/authorizedFetch';
 
 type UserInputType = {
   id: number;
   parentId: number;
   name: string;
   grade: number;
-  profileUrl?: string;
+  profileImageUrl?: string;
 };
 
 export default function EditChildPage() {
@@ -29,19 +30,17 @@ export default function EditChildPage() {
       if (!id) return;
 
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user-jrs/${id}`, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
-          },
+        const res = await authorizedFetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user-jrs/${id}`, {
         });
 
         const data = await res.json();
+
         setUserInput({
           id: data.id,
           parentId: data.parentId,
           name: data.name,
           grade: data.schoolGrade,
-          profileUrl: '/assets/profile.png',
+          profileImageUrl : data.profileImageUrl ?? '/assets/profile.png',
         });
       } catch (err) {
         console.error('자녀 정보 불러오기 실패:', err);
