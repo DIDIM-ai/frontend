@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { useInView } from 'react-intersection-observer';
 import { ListCard } from '@/components/ui/listcard';
@@ -24,29 +24,25 @@ export function AnalysisCard() {
   const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [fetchedPages, setFetchedPages] = useState<Set<string>>(new Set());
+
+  const fetchedPagesRef = useRef<Set<string>>(new Set());
   const { ref, inView } = useInView({ threshold: 0.5 });
 
   const getPageKey = (childId: number, page: number) => `${childId}_${page}`;
 
-  const fetchLogs = async (pageToFetch: number) => {
+  const fetchLogs = useCallback(async (pageToFetch: number) => {
     if (!selectedChild) return;
 
     const pageKey = getPageKey(selectedChild.id, pageToFetch);
-    if (fetchedPages.has(pageKey)) return;
+    if (fetchedPagesRef.current.has(pageKey)) return;
 
-    setFetchedPages((prev) => {
-      const updated = new Set(prev);
-      updated.add(pageKey);
-      return updated;
-    });
-
+    fetchedPagesRef.current.add(pageKey);
     setLoading(true);
+
     try {
       const res = await authorizedFetch(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/math/logs?userJrId=${selectedChild.id}&page=${pageToFetch}&size=${ITEMS_PER_PAGE}`
       );
-
       if (!res.ok) throw new Error(`요청 실패: ${res.status}`);
 
       const data = await res.json();
@@ -54,7 +50,10 @@ export function AnalysisCard() {
 
       setLogs((prev) => {
         const existingIds = new Set(prev.map((log) => log.logSolveId));
-        return [...prev, ...newLogs.filter((log) => !existingIds.has(log.logSolveId))];
+        return [
+          ...prev,
+          ...newLogs.filter((log) => !existingIds.has(log.logSolveId)),
+        ];
       });
 
       setHasMore(newLogs.length === ITEMS_PER_PAGE);
@@ -63,7 +62,7 @@ export function AnalysisCard() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [selectedChild]);
 
   useEffect(() => {
     if (!selectedChild) return;
@@ -72,36 +71,34 @@ export function AnalysisCard() {
     setPage(0);
     setHasMore(true);
     setError(null);
-    setFetchedPages(new Set());
+    fetchedPagesRef.current.clear();
 
-    fetchLogs(0); 
-  }, [selectedChild]);
+    fetchLogs(0);
+  }, [selectedChild, fetchLogs]);
 
   useEffect(() => {
-    if (!selectedChild) return;
     if (page !== 0) {
       fetchLogs(page);
     }
-  }, [page]);
+  }, [page, fetchLogs]);
 
   useEffect(() => {
     if (inView && !loading && hasMore) {
       setPage((prev) => prev + 1);
     }
-  }, [inView]);
+  }, [inView, loading, hasMore]);
 
-  if (error) return <p className="text-sm text-red-500">{error}</p>;
-  if (!logs.length && loading) return <ListCardSkeleton count={Math.min(3, ITEMS_PER_PAGE)} />;
-  if (!logs.length) return <p className="text-sm text-gray-500">분석 기록이 없습니다.</p>;
+  if (error)
+    return <p className="text-sm text-red-500">{error}</p>;
+  if (!logs.length && loading)
+    return <ListCardSkeleton count={Math.min(3, ITEMS_PER_PAGE)} />;
+  if (!logs.length)
+    return <p className="text-sm text-gray-500">분석 기록이 없습니다.</p>;
 
   return (
     <div className="flex flex-col gap-2.5">
       {logs.map((item) => (
-        <Link
-          key={item.logSolveId}
-          href={`/result/${item.logSolveId}`}
-          className="block"
-        >
+        <Link key={item.logSolveId} href={`/result/${item.logSolveId}`} className="block">
           <ListCard
             id={item.logSolveId}
             imageSrc={item.imageUrl}
