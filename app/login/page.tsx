@@ -30,14 +30,17 @@ export default function LoginPage() {
     window.location.href = `${process.env.NEXT_PUBLIC_BACKEND_URL}/oauth2/authorization/kakao?redirect_uri=${process.env.NEXT_PUBLIC_REDIRECT_URI}`;
   };
 
-  if (isLoggingIn) {
-    return (
-      <div className="fixed inset-0 z-50 flex flex-col items-center justify-center">
-        <Lottie animationData={loadingAnimation} loop className="w-60 h-60" />
-        <p className="mt-6 text-lg">로그인 중입니다...</p>
+if (isLoggingIn) {
+  return (
+    <div className="fixed inset-0">
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2  -translate-y-[70%] flex flex-col items-center">
+        <Lottie animationData={loadingAnimation} loop className="w-70 h-70" />
+        <p className="text-xl text-gray-500">로그인 처리 중 . . .</p>
       </div>
-    );
-  }
+    </div>
+  );
+}
+
 
   return (
     <div className="flex flex-col min-h-screen items-center justify-center">
