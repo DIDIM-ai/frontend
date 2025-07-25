@@ -78,14 +78,8 @@ export default function ResultPage() {
     );
   }
 
-  console.log(error);
-
   if (error) {
-    return (
-      <div className="flex items-center justify-center min-h-[calc(100vh-151px)]">
-        <p>{error}</p>
-      </div>
-    );
+    redirect('/forbidden');
   }
 
   return (
