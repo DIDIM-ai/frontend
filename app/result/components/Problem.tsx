@@ -22,7 +22,8 @@ export function Problem({ problem }: ProblemProps) {
           className="object-fit border border-zinc-200 rounded-lg p-3"
         />
       </div>
-      <p className="px-2 font-semibold">{problem?.problem_text || '문제 정보가 없습니다.'}</p>
+      <p className="px-2 mb-7">{problem?.problem_text || '문제 정보가 없습니다.'}</p>
+      <div className="relative max-w-[var(--space-mobileMax)] left-0 right-0 bg-gray-50 h-2 -mx-5" />
     </section>
   );
 }

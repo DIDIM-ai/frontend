@@ -39,7 +39,7 @@ export default function RootLayout({
   return (
     <html lang="ko" className={`${pretendard.variable} ${suite.variable} ${montserrat.variable}`}>
       <body>
-        <div className="relative max-w-[var(--space-mobileMax)] min-h-screen px-5 py-4 mx-auto border-x border-zinc-200">
+        <div className="relative max-w-[var(--space-mobileMax)] min-h-screen px-5 py-4 mx-auto border-x border-gray-100">
           <BodyWrapper>{children}</BodyWrapper>
         </div>
         <Toaster
