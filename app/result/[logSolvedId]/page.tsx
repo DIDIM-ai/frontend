@@ -7,13 +7,16 @@ import { redirect, useParams } from 'next/navigation';
 import { Problem } from '../components/Problem';
 import { Solve } from '../components/Solve';
 import { TextInput } from '../components/TextInput';
+import Loading from '@/components/common/Loading';
+import { useLoadingStore } from '@/stores/useLoadingStore';
 
 export default function ResultPage() {
   const params = useParams();
   const logSolvedId = params?.logSolvedId;
 
+  const { isDataLoading: dataLoading, setDataLoading } = useLoadingStore();
+
   const [problem, setProblem] = useState(null);
-  const [dataLoading, setDataLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   const { isLoading: authLoading, showLoginPrompt, handleLoginClick } = useAuthRedirect();
@@ -64,13 +67,13 @@ export default function ResultPage() {
     };
 
     fetchProblem();
-  }, [logSolvedId, authLoading]);
+  }, [logSolvedId, authLoading, setDataLoading]);
 
   if (overallLoading) {
     return (
       <>
-        <div className="flex items-center justify-center min-h-[calc(100vh-151px)]">
-          <p>데이터를 불러오는 중입니다...</p>
+        <div className="flex items-center justify-center min-h-[calc(100vh-91px)]">
+          <Loading />
         </div>
 
         <AuthModal isOpen={showLoginPrompt} onLoginClick={handleLoginClick} />

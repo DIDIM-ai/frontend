@@ -5,6 +5,7 @@ import { RootHeader } from '@/components/common/RootHeader';
 import { ResultHeader } from '@/components/common/ResultHeader';
 import { MenuBar } from '@/components/common/MenuBar';
 import { pagesConfig } from '@/config/pagesConfig';
+import { useLoadingStore } from '@/stores/useLoadingStore';
 
 interface Props {
   children: React.ReactNode;
@@ -12,6 +13,7 @@ interface Props {
 
 export function BodyWrapper({ children }: Props) {
   const pathname = usePathname();
+  const { isDataLoading } = useLoadingStore();
 
   const currentPageConfig = pagesConfig[pathname as keyof typeof pagesConfig] || {
     headerType: 'secondary',
@@ -26,8 +28,8 @@ export function BodyWrapper({ children }: Props) {
 
   return (
     <>
-      {showRootHeader && <RootHeader />}
-      {showResultHeader && <ResultHeader />}
+      {!isDataLoading && showRootHeader && <RootHeader />}
+      {!isDataLoading && showResultHeader && <ResultHeader />}
 
       <div className="pb-20">{children}</div>
 
