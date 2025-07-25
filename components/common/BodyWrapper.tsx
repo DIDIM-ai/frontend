@@ -2,9 +2,9 @@
 
 import { usePathname } from 'next/navigation';
 import { RootHeader } from '@/components/common/RootHeader';
-import { RemoveBodyPointerEvents } from '@/components/common/RemoveBodyPointerEvents';
-import { ResultHeader } from './ResultHeader';
-import { MenuBar } from './MenuBar';
+import { ResultHeader } from '@/components/common/ResultHeader';
+import { MenuBar } from '@/components/common/MenuBar';
+import { pagesConfig } from '@/config/pagesConfig';
 
 interface Props {
   children: React.ReactNode;
@@ -12,19 +12,26 @@ interface Props {
 
 export function BodyWrapper({ children }: Props) {
   const pathname = usePathname();
-  const excludePaths = ['/login'];
-  const isExcluded = excludePaths.includes(pathname);
-  const isResultPage = pathname.startsWith('/result');
+
+  const currentPageConfig = pagesConfig[pathname as keyof typeof pagesConfig] || {
+    headerType: 'secondary',
+    showFooter: false,
+  };
+
+  const isErrorOrForbiddenPage = pathname === '/not-found' || pathname === '/forbidden';
+
+  const showRootHeader = currentPageConfig.headerType === 'primary' && !isErrorOrForbiddenPage;
+  const showResultHeader = currentPageConfig.headerType === 'secondary' && !isErrorOrForbiddenPage;
+  const showMenuBar = currentPageConfig.showFooter && !isErrorOrForbiddenPage;
 
   return (
-    <div className="relative max-w-[var(--space-mobileMax)] min-h-screen px-5 py-4 mx-auto border-x border-zinc-200">
-      <RemoveBodyPointerEvents />
-      {!isExcluded && !isResultPage && <RootHeader />}
-      {isResultPage && <ResultHeader />}
-      <div className="pb-20">
-        {children}
-        {!isExcluded && !isResultPage && <MenuBar />}
-      </div>
-    </div>
+    <>
+      {showRootHeader && <RootHeader />}
+      {showResultHeader && <ResultHeader />}
+
+      <div className="pb-20">{children}</div>
+
+      {showMenuBar && <MenuBar />}
+    </>
   );
 }
