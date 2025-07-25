@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { ChildForm } from '@/app/users/components/ChildForm';
 import { toast } from 'sonner';
@@ -21,18 +21,18 @@ export default function EditChildPage() {
 
   const [userInput, setUserInput] = useState<UserInputType | null>(null);
 
-  const handleBackToUsers = () => {
+  const handleBackToUsers = useCallback(() => {
     router.push('/users');
-  };
+  }, [router]);
 
   useEffect(() => {
     const fetchChild = async () => {
       if (!id) return;
 
       try {
-        const res = await authorizedFetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user-jrs/${id}`, {
-        });
-
+        const res = await authorizedFetch(
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user-jrs/${id}`
+        );
         const data = await res.json();
 
         setUserInput({
@@ -40,17 +40,17 @@ export default function EditChildPage() {
           parentId: data.parentId,
           name: data.name,
           grade: data.schoolGrade,
-          profileImageUrl : data.profileImageUrl ?? '/assets/profile.png',
+          profileImageUrl: data.profileImageUrl ?? '/assets/profile.png',
         });
       } catch (err) {
         console.error('자녀 정보 불러오기 실패:', err);
         toast.error('자녀 정보를 불러오지 못했습니다.');
-        handleBackToUsers(); 
+        handleBackToUsers();  
       }
     };
 
     fetchChild();
-  }, [id]);
+  }, [id, handleBackToUsers]);  
 
   if (!userInput) return <div>로딩 중...</div>;
 
