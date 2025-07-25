@@ -5,6 +5,7 @@ import { ListCard } from '@/components/ui/listcard';
 import { ListCardSkeleton } from '@/components/common/ListCardSkeleton';
 import Link from 'next/link';
 import { authorizedFetch } from '@/lib/authorizedFetch';
+import { NoDataFound } from '@/components/common/NoDataFound';
 
 interface AnalysisResultItem {
   logSolveId: number;
@@ -47,12 +48,11 @@ export function AnalysisResult() {
     fetchResults();
   }, []);
 
-  console.log(results);
-
   return (
     <section>
       <h3 className="text-xl font-bold mb-2.5">최근 분석 결과</h3>
       {loading && <ListCardSkeleton count={3} />}
+      {!loading && results.length === 0 && <NoDataFound />}
       {error && <p className="text-red-500">{error}</p>}
       <ul className="flex flex-col gap-2.5">
         {results.map((item) => (
