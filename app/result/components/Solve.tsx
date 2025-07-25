@@ -32,17 +32,17 @@ export function Solve({ problem }: SolveProps) {
         <p className="mb-5">{problem.answer}</p>
       </div>
 
-      <div className="mb-10 border-b border-gray-100">
+      <div className="mb-10 bg-gray-100 p-3 rounded-lg">
         <h3 className="text-xl text-primary font-bold mb-5">이렇게 알려주세요!</h3>
-        <p className="mb-5 text-gray-500">{problem.parent_explanation}</p>
+        <p className="mb-5 text-sm text-[#1a1a1a]">{problem.parent_explanation}</p>
       </div>
 
       <div className="">
         <h3 className="text-xl font-bold">단계 별 풀이</h3>
         <div className="flex flex-col gap-5">
           {problem.explanation_steps.map((item, idx) => (
-            <div className="border-b border-gray-100 py-5" key={idx}>
-              <h3 className="text-lg font-semibold">{item.title}</h3>
+            <div className="py-5" key={idx}>
+              <h3 className="text-lg font-bold">{item.title}</h3>
               <p>{item.description}</p>
               <div className="flex justify-end mt-2 text-gray-500 relative">
                 <div

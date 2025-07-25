@@ -19,7 +19,7 @@ export function Problem({ problem }: ProblemProps) {
           src={`${problem.image_url}` || '/assets/example.png'}
           alt="문제 이미지"
           fill
-          className="object-fit border border-zinc-200 rounded-lg p-3"
+          className="object-fit border border-gray-200 rounded-lg p-3"
         />
       </div>
       <p className="px-2 mb-7">{problem?.problem_text || '문제 정보가 없습니다.'}</p>
