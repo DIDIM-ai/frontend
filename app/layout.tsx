@@ -3,6 +3,7 @@ import localFont from 'next/font/local';
 import { Montserrat } from 'next/font/google';
 import './globals.css';
 import { Toaster } from '@/components/ui/sonner';
+import { BodyWrapper } from '@/components/common/BodyWrapper';
 
 const pretendard = localFont({
   src: '../public/fonts/PretendardVariable.woff2',
@@ -39,15 +40,15 @@ export default function RootLayout({
     <html lang="ko" className={`${pretendard.variable} ${suite.variable} ${montserrat.variable}`}>
       <body>
         <div className="relative max-w-[var(--space-mobileMax)] min-h-screen px-5 py-4 mx-auto border-x border-zinc-200">
-          {children}
-          <Toaster
-            richColors
-            closeButton={false}
-            duration={3000}
-            position="bottom-center"
-            toastOptions={{ style: { marginBottom: '80px' } }}
-          />
+          <BodyWrapper>{children}</BodyWrapper>
         </div>
+        <Toaster
+          richColors
+          closeButton={false}
+          duration={3000}
+          position="bottom-center"
+          toastOptions={{ style: { marginBottom: '80px' } }}
+        />
       </body>
     </html>
   );

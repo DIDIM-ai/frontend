@@ -3,7 +3,7 @@
 import useAuthRedirect from '@/hooks/useAuthRedirect';
 import { AuthModal } from '@/components/common/AuthModal';
 import { useEffect, useState } from 'react';
-import { useParams } from 'next/navigation';
+import { redirect, useParams } from 'next/navigation';
 import { Problem } from '../components/Problem';
 import { Solve } from '../components/Solve';
 import { TextInput } from '../components/TextInput';
@@ -40,6 +40,12 @@ export default function ResultPage() {
             Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
           },
         });
+
+        if (res.status === 401) {
+          console.log('401');
+          redirect('/forbidden');
+        }
+
         if (!res.ok) {
           const errorData = await res.json();
           throw new Error(errorData.message || '문제 데이터를 불러오지 못했습니다.');
@@ -63,7 +69,7 @@ export default function ResultPage() {
   if (overallLoading) {
     return (
       <>
-        <div className="flex items-center justify-center min-h-[calc(100vh-200px)]">
+        <div className="flex items-center justify-center min-h-[calc(100vh-151px)]">
           <p>데이터를 불러오는 중입니다...</p>
         </div>
 
@@ -72,10 +78,12 @@ export default function ResultPage() {
     );
   }
 
+  console.log(error);
+
   if (error) {
     return (
-      <div className="flex items-center justify-center min-h-[calc(100vh-200px)] text-red-600">
-        <p>오류: {error}</p>
+      <div className="flex items-center justify-center min-h-[calc(100vh-151px)]">
+        <p>{error}</p>
       </div>
     );
   }
