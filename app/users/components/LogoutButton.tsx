@@ -18,7 +18,6 @@ export function LogoutButton() {
       if (!res.ok) throw new Error('로그아웃 실패');
 
       localStorage.removeItem('accessToken');
-      localStorage.removeItem('selected-child'); 
       clearUser();
       localStorage.removeItem('user-store');
 

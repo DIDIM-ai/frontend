@@ -20,7 +20,7 @@ export default function RegisterChildPage() {
 
   return (
     <div className="px-4 py-6">
-      <h2 className="text-lg font-semibold mb-6">자녀 등록</h2>
+      <h2 className="text-xl font-semibold mb-6">자녀 등록</h2>
       <ChildForm
         mode="register"
         parentId={user.userId} 
