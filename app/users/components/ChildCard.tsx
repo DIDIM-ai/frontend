@@ -67,11 +67,11 @@ export function ChildCard({
     <>
       <section
         onClick={onClick}
-        className={`relative w-[130px] h-[130px] rounded-[5px] flex flex-col items-center justify-center border border-primary
+        className={`relative w-[140px] h-[140px] rounded-[5px] flex flex-col items-center justify-center border border-primary
         ${selected ? 'bg-primary text-white' : 'bg-white text-black'}
         cursor-pointer shadow-[0_2px_5px_0_theme('colors.secondary.DEFAULT')]`}
       >
-        <div className="relative w-[60px] h-[60px] rounded-full overflow-hidden border border-primary mb-1">
+        <div className="relative w-[70px] h-[70px] rounded-full overflow-hidden border border-primary mb-1">
           <Image
             loader={() => profileImageUrl ?? '/assets/profile.png'}
             src={profileImageUrl || '/assets/profile.png'}
@@ -90,10 +90,10 @@ export function ChildCard({
           <DropdownMenuTrigger asChild>
             <button
               onClick={(e) => e.stopPropagation()}
-              className="absolute top-1 right-0 rounded-md z-50"
+              className="absolute top-1 right-0 rounded-md z-50 cursor-pointer"
             >
               <MoreVertical
-                className={`w-4 h-4 ${selected ? 'text-white' : 'text-primary'}`}
+                className={`w-6 h-6 ${selected ? 'text-white' : 'text-primary'}`}
               />
             </button>
           </DropdownMenuTrigger>
@@ -103,7 +103,7 @@ export function ChildCard({
               align="end"
               side="top"
               sideOffset={8}
-              className="absolute top-6 right-1 z-50 w-[80px] rounded-md 
+              className="absolute top-8 right-1 z-50 w-[90px] rounded-md cursor-pointer 
               border border-primary bg-secondary shadow-md text-sm text-center p-0 font-semibold"
             >
               <DropdownMenuItem
