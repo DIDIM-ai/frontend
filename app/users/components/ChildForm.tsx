@@ -155,7 +155,7 @@ const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
             alt="프로필"
             width={70}
             height={70}
-            className="rounded-full border border-primary object-cover w-[60px] h-[60px]"
+            className="rounded-full border border-primary object-cover w-[70px] h-[70px]"
           />
         </div>
         <button
@@ -175,26 +175,26 @@ const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
 
       {/* 이름 입력 */}
       <div className="w-full">
-        <label className="block text-sm font-medium mb-2">이름 (닉네임)</label>
+        <label className="block font-medium mb-2">이름 (닉네임)</label>
         <Input
           value={name}
           onChange={(e) => setName(e.target.value)}
           placeholder="이름을 입력하세요"
-          className="focus-visible:ring-primary"
+          className="focus-visible:ring-2 focus-visible:ring-[rgba(255,119,16,0.3)]"
         />
         {nameError && <p className="text-sm text-red-500 mt-1">{nameError}</p>}
       </div>
 
       {/* 학년 선택 */}
-      <div className="w-full">
-        <label className="block text-sm font-medium mb-1">학년</label>
+      <div className="w-full mb-8">
+        <label className="block font-medium mb-1">학년</label>
         <Select value={grade.toString()} onValueChange={(v) => setGrade(Number(v))}>
-          <SelectTrigger className="w-full h-12">
+          <SelectTrigger className="w-full h-12 cursor-pointer">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
             {gradeOptions.map((g) => (
-              <SelectItem key={g.value} value={g.value.toString()}>
+              <SelectItem key={g.value} value={g.value.toString()} className='cursor-pointer'>
                 {g.label}
               </SelectItem>
             ))}
@@ -203,7 +203,7 @@ const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
       </div>
 
       {/* 버튼 */}
-      <div className="w-full flex flex-col gap-1 mt-4">
+      <div className="w-full flex flex-col gap-1">
         <Button
           type="submit"
           className="bg-primary text-white mb-2"
