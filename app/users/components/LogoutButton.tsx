@@ -19,7 +19,6 @@ export function LogoutButton() {
 
       localStorage.removeItem('accessToken');
       clearUser();
-      localStorage.removeItem('user-store');
 
       toast.success('로그아웃 되었습니다.');
       router.push('/login');

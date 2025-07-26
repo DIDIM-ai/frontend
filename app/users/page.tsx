@@ -32,7 +32,7 @@ export default function UsersPage() {
   const [children, setChildren] = useState<Child[]>([]);
 
   const { setSelectedChild } = useSelectedChildStore();
-  const selectedChild = useSelectedChildStore((state) => state.selectedChild); // ✅ 추가된 부분
+  const selectedChild = useSelectedChildStore((state) => state.selectedChild); 
 
   const {
     isLoading: authLoading,

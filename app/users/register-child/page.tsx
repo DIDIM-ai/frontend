@@ -1,20 +1,31 @@
 'use client';
 
-import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { ChildForm } from '../components/ChildForm';
 import { useUserStore } from '@/stores/useUserStore';
+import useAuthRedirect from '@/hooks/useAuthRedirect';
+import { AuthModal } from '@/components/common/AuthModal';
 
 export default function RegisterChildPage() {
   const router = useRouter();
   const user = useUserStore((state) => state.user);
 
-  useEffect(() => {
-    if (!user) {
-      alert('로그인이 필요합니다.');
-      router.push('/login');
-    }
-  }, [user, router]);
+  const {
+    isLoading,        
+    showLoginPrompt,  
+    handleLoginClick, 
+  } = useAuthRedirect();
+
+  if (isLoading) {
+    return (
+      <>
+        <div className="flex items-center justify-center min-h-[calc(100vh-200px)]">
+          <p>인증 정보를 확인 중입니다...</p>
+        </div>
+        <AuthModal isOpen={showLoginPrompt} onLoginClick={handleLoginClick} />
+      </>
+    );
+  }
 
   if (!user) return null;
 
@@ -23,7 +34,7 @@ export default function RegisterChildPage() {
       <h2 className="text-xl font-semibold mb-6">자녀 등록</h2>
       <ChildForm
         mode="register"
-        parentId={user.userId} 
+        parentId={user.userId}
         onSubmit={() => router.push('/users')}
         onCancel={() => router.push('/users')}
       />
