@@ -2,11 +2,12 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
-import { ChildForm } from '@/app/users/components/ChildForm';
 import { toast } from 'sonner';
 import { authorizedFetch } from '@/lib/authorizedFetch';
 import useAuthRedirect from '@/hooks/useAuthRedirect';
 import { AuthModal } from '@/components/common/AuthModal';
+import  Loading  from '@/components/common/Loading';
+import { ChildForm } from '@/app/users/components/ChildForm';
 
 type UserInputType = {
   id: number;
@@ -76,11 +77,7 @@ export default function EditChildPage() {
   }
 
   if (!userInput) {
-    return (
-      <div className="px-4 py-6 text-center">
-        자녀 정보를 불러오는 중입니다...
-      </div>
-    );
+    return <Loading />;
   }
 
   return (
