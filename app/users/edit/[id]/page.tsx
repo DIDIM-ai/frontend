@@ -5,6 +5,8 @@ import { useRouter, useParams } from 'next/navigation';
 import { ChildForm } from '@/app/users/components/ChildForm';
 import { toast } from 'sonner';
 import { authorizedFetch } from '@/lib/authorizedFetch';
+import useAuthRedirect from '@/hooks/useAuthRedirect';
+import { AuthModal } from '@/components/common/AuthModal';
 
 type UserInputType = {
   id: number;
@@ -21,6 +23,12 @@ export default function EditChildPage() {
 
   const [userInput, setUserInput] = useState<UserInputType | null>(null);
 
+  const {
+    isLoading,
+    showLoginPrompt,
+    handleLoginClick,
+  } = useAuthRedirect();
+
   const handleBackToUsers = useCallback(() => {
     router.push('/users');
   }, [router]);
@@ -33,6 +41,11 @@ export default function EditChildPage() {
         const res = await authorizedFetch(
           `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user-jrs/${id}`
         );
+
+        if (!res.ok) {
+          throw new Error('Fetch failed');
+        }
+
         const data = await res.json();
 
         setUserInput({
@@ -45,14 +58,30 @@ export default function EditChildPage() {
       } catch (err) {
         console.error('자녀 정보 불러오기 실패:', err);
         toast.error('자녀 정보를 불러오지 못했습니다.');
-        handleBackToUsers();  
       }
     };
 
     fetchChild();
-  }, [id, handleBackToUsers]);  
+  }, [id, handleBackToUsers]);
 
-  if (!userInput) return <div>로딩 중...</div>;
+  if (isLoading) {
+    return (
+      <>
+        <div className="flex items-center justify-center min-h-[calc(100vh-200px)]">
+          <p>인증 정보를 확인 중입니다...</p>
+        </div>
+        <AuthModal isOpen={showLoginPrompt} onLoginClick={handleLoginClick} />
+      </>
+    );
+  }
+
+  if (!userInput) {
+    return (
+      <div className="px-4 py-6 text-center">
+        자녀 정보를 불러오는 중입니다...
+      </div>
+    );
+  }
 
   return (
     <div className="px-4 py-6">
