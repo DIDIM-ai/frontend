@@ -18,14 +18,20 @@ export default function SuccessPage() {
       localStorage.setItem('accessToken', token);
 
       try {
-        const res = await authorizedFetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/test/api/temp/user/me`);
-
-        if (!res.ok) throw new Error('사용자 정보 조회 실패');
-
-        const user = await res.json();
+        const userRes = await authorizedFetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/test/api/temp/user/me`);
+        if (!userRes.ok) throw new Error('사용자 정보 조회 실패');
+        const user = await userRes.json();
         setUser(user);
 
-        router.replace('/');
+        const childRes = await authorizedFetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user-jrs/parent`);
+        if (!childRes.ok) throw new Error('자녀 목록 조회 실패');
+        const children = await childRes.json();
+
+        if (!children || children.length === 0) {
+          router.replace('/users/register-child');
+        } else {
+          router.replace('/');
+        }
       } catch (err) {
         console.error('로그인 후 처리 실패:', err);
         localStorage.removeItem('accessToken');
