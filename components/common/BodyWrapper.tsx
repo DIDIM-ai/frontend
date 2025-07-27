@@ -15,7 +15,14 @@ export function BodyWrapper({ children }: Props) {
   const pathname = usePathname();
   const { isDataLoading } = useLoadingStore();
 
-  const currentPageConfig = pagesConfig[pathname as keyof typeof pagesConfig] || {
+    const normalizePath = (path: string): string => {
+    if (path.startsWith('/users/edit/')) return '/users/edit/[id]';
+    return path;
+  };
+
+  const matchedPath = normalizePath(pathname);
+
+  const currentPageConfig = pagesConfig[matchedPath as keyof typeof pagesConfig] || {
     headerType: 'secondary',
     showFooter: false,
   };
