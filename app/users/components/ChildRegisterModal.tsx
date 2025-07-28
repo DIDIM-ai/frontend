@@ -34,3 +34,4 @@ export function ChildRegisterModal({ isOpen, onClose }: Props) {
     </Dialog>
   );
 }
+// This file is used to show a modal when there are no registered children.
