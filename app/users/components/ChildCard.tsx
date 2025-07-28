@@ -50,6 +50,7 @@ export function ChildCard({
       if (!res.ok) throw new Error('자녀 삭제 실패');
 
       toast.success(`${name} 프로필이 삭제되었습니다.`);
+      localStorage.removeItem('selected-child');
       setShowModal(false);
       onDeleted?.(id);
     } catch (err) {
