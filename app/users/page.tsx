@@ -11,6 +11,7 @@ import useAuthRedirect from '@/hooks/useAuthRedirect';
 
 import { ChildCard } from './components/ChildCard';
 import { AddChildCard } from './components/AddChildCard';
+import { EmptyChildCard } from './components/EmptyChild';
 import { AnalysisCard } from './components/AnalysisCard';
 import { WithdrawButton } from './components/WithdrawButton';
 import { ChildCardSkeleton } from './components/ui/ChildCardSkeleton';
@@ -31,7 +32,7 @@ export default function UsersPage() {
   const [children, setChildren] = useState<Child[]>([]);
 
   const { setSelectedChild } = useSelectedChildStore();
-  const selectedChild = useSelectedChildStore((state) => state.selectedChild);
+  const selectedChild = useSelectedChildStore((state) => state.selectedChild); 
 
   const {
     isLoading: authLoading,
@@ -50,19 +51,15 @@ export default function UsersPage() {
         if (!res.ok) throw new Error('자녀 정보 조회 실패');
 
         const childList: Child[] = await res.json();
-
-        if (childList.length === 0) {
-          router.replace('/users/register-child');
-          return;
-        }
-
         setChildren(childList);
 
-        const storedChild = useSelectedChildStore.getState().selectedChild;
-        const matchedChild = childList.find((c) => c.id === storedChild?.id);
-        const initialChild = matchedChild ?? childList[0];
-        setSelectedChild(initialChild);
-        setSelectedIndex(childList.findIndex((c) => c.id === initialChild.id));
+        if (childList.length > 0) {
+          const storedChild = useSelectedChildStore.getState().selectedChild;
+          const matchedChild = childList.find((c) => c.id === storedChild?.id);
+          const initialChild = matchedChild ?? childList[0];
+          setSelectedChild(initialChild);
+          setSelectedIndex(childList.findIndex((c) => c.id === initialChild.id));
+        }
 
         setIsLoading(false);
       } catch (error) {
@@ -79,15 +76,12 @@ export default function UsersPage() {
     const updatedChildren = children.filter((c) => c.id !== deletedId);
     setChildren(updatedChildren);
 
-    if (updatedChildren.length === 0) {
-      router.replace('/users/register-child');
-      return;
-    }
-
     if (children[selectedIndex]?.id === deletedId) {
       const newIndex = 0;
       setSelectedIndex(newIndex);
-      setSelectedChild(updatedChildren[newIndex]);
+      if (updatedChildren.length > 0) {
+        setSelectedChild(updatedChildren[newIndex]);
+      }
     } else if (selectedIndex >= updatedChildren.length) {
       const newIndex = updatedChildren.length - 1;
       setSelectedIndex(newIndex);
@@ -117,6 +111,8 @@ export default function UsersPage() {
               <ChildCardSkeleton key={idx} />
             ))}
           </div>
+        ) : children.length === 0 ? (
+          <EmptyChildCard onRegisterClick={() => router.push('/users/register-child')} />
         ) : (
           <div className="grid grid-cols-2 gap-6">
             {children.map((child, index) => (
@@ -143,8 +139,7 @@ export default function UsersPage() {
         {selectedChild ? (
           <>
             <span className="text-primary">{selectedChild.name}</span> 님의 분석 기록
-          </>
-        ) : (
+          </>): (
           '이전 분석 기록'
         )}
       </h2>
