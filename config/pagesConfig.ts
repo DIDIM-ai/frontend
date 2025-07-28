@@ -11,6 +11,14 @@ export const pagesConfig = {
     headerType: 'primary',
     showFooter: true,
   },
+  '/users/register-child': {
+    headerType: 'primary', 
+    showFooter: false,
+  },
+  '/users/edit/[id]': {
+    headerType: 'primary', 
+    showFooter: false,
+  },
   '/result': {
     headerType: 'secondary',
     showFooter: true,
